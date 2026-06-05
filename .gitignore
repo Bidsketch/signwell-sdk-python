@@ -1,0 +1,28 @@
+# Python caches and virtualenvs
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.cache/
+.venv/
+venv/
+env/
+.python-version
+
+# Local validation artifacts
+.validation/
+validation_assets/
+
+# Build and packaging artifacts
+dist/
+build/
+sdist/
+downloads/
+*.egg-info/
+
+# OpenAPI Generator local metadata/spec copies
+.openapi-generator/
+.openapi-generator-ignore
+openapi.yaml
+/docs

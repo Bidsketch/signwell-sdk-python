@@ -1,0 +1,104 @@
+[project]
+name = "signwell-sdk-python"
+version = "0.1.0"
+description = "Python SDK for the SignWell API"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "SignWell", email = "support@signwell.com" }
+]
+keywords = ["signwell", "esignature", "api", "sdk"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed"
+]
+dependencies = [
+  "pydantic>=2,<3",
+  "python-dateutil>=2.8.2,<3",
+  "typing-extensions>=4.7.1",
+  "urllib3>=1.26.18,<3"
+]
+
+[project.urls]
+Homepage = "https://www.signwell.com"
+Repository = "https://github.com/Bidsketch/signwell-sdk-python"
+Issues = "https://github.com/Bidsketch/signwell-sdk-python/issues"
+Documentation = "https://developers.signwell.com"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.8",
+  "pytest>=8",
+  "ruff>=0.8",
+  "twine>=5",
+  "types-python-dateutil>=2.8.19.14"
+]
+
+[build-system]
+requires = ["uv_build>=0.8.4,<0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "signwell_sdk"
+module-root = ""
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = [
+  ".openapi-generator",
+  "docs",
+  "test"
+]
+
+[tool.ruff.lint]
+select = ["B", "C4", "E", "F", "I", "SIM", "UP"]
+ignore = [
+  "B008",
+  "B904",
+  "C409",
+  "C405",
+  "E721",
+  "E501",
+  "F401",
+  "F811",
+  "I001",
+  "SIM101",
+  "SIM105",
+  "SIM118",
+  "SIM108",
+  "UP030",
+  "UP031",
+  "UP006",
+  "UP007",
+  "UP035"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.mypy]
+python_version = "3.10"
+files = ["signwell_sdk", "tests"]
+exclude = ["^test/"]
+ignore_missing_imports = true
+follow_imports = "silent"
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+check_untyped_defs = true
+disallow_untyped_defs = false
+disallow_any_generics = false
+no_implicit_optional = true
+strict_equality = true
