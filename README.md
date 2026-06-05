@@ -105,31 +105,7 @@ url = signwell_sdk.Embedded.embedded_signing_url(doc)
 Embedded signing documents must include fields for every recipient, set
 `with_signature_page=True`, or set `text_tags=True`.
 
-## Webhook Verification
 
-```python
-payload = request.json()
-event = payload["event"]
-
-signwell_sdk.Webhook.verify_event_or_raise(
-    event=event,
-    webhook_id=os.environ["SIGNWELL_WEBHOOK_ID"],
-    tolerance_seconds=300,
-)
-```
-
-For side-effecting handlers, use replay-aware verification with an atomic store:
-
-```python
-store = signwell_sdk.Webhook.MemoryReplayStore()
-
-signwell_sdk.Webhook.verify_event_once_or_raise(
-    event=event,
-    webhook_id=os.environ["SIGNWELL_WEBHOOK_ID"],
-    tolerance_seconds=300,
-    replay_store=store,
-)
-```
 
 `MemoryReplayStore` is intended for local development and single-process apps.
 Production apps should use a shared atomic store such as Redis or a database
