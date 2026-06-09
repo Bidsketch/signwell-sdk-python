@@ -9,7 +9,9 @@ import signwell_sdk
 from signwell_sdk.api.bulk_send_api import BulkSendApi
 from signwell_sdk.api.document_api import DocumentApi
 from signwell_sdk.api.regional_api import RegionalApi
-from signwell_sdk.models.bulk_send_csv_template_response import BulkSendCsvTemplateResponse
+from signwell_sdk.models.bulk_send_csv_template_response import (
+    BulkSendCsvTemplateResponse,
+)
 from signwell_sdk.models.completed_pdf_url_response import CompletedPdfUrlResponse
 from signwell_sdk.models.nom151_certificate_response import Nom151CertificateResponse
 from signwell_sdk.models.nom151_url_response import Nom151UrlResponse
@@ -43,7 +45,14 @@ def api_client_with_response(response):
     api_client = cast(Any, signwell_sdk.ApiClient(configuration))
     calls: list[dict[str, Any]] = []
 
-    def call_api(method, url, header_params=None, body=None, post_params=None, _request_timeout=None):
+    def call_api(
+        method,
+        url,
+        header_params=None,
+        body=None,
+        post_params=None,
+        _request_timeout=None,
+    ):
         calls.append(
             {
                 "method": method,
@@ -62,7 +71,10 @@ def api_client_with_response(response):
 
 def test_bulk_send_csv_template_defaults_to_binary_mode():
     api_client, calls = api_client_with_response(
-        FakeRestResponse(body=b"name,email\nJane,jane@example.com\n", headers={"Content-Type": "text/csv"})
+        FakeRestResponse(
+            body=b"name,email\nJane,jane@example.com\n",
+            headers={"Content-Type": "text/csv"},
+        )
     )
 
     result = cast(
@@ -113,7 +125,10 @@ def test_completed_pdf_uses_json_for_url_mode():
         )
     )
 
-    result = cast(CompletedPdfUrlResponse, DocumentApi(api_client).get_completed_pdf("doc_123", url_only=True))
+    result = cast(
+        CompletedPdfUrlResponse,
+        DocumentApi(api_client).get_completed_pdf("doc_123", url_only=True),
+    )
 
     assert result.file_url == "https://example.com/signed.pdf"
     assert calls[0]["headers"]["Accept"] == "application/json"
@@ -134,7 +149,10 @@ def test_nom151_response_modes_and_conflict_validation():
             headers={"Content-Type": "application/json"},
         )
     )
-    result_url = cast(Nom151UrlResponse, RegionalApi(api_client).get_nom151_certificate("doc_123", url_only=True))
+    result_url = cast(
+        Nom151UrlResponse,
+        RegionalApi(api_client).get_nom151_certificate("doc_123", url_only=True),
+    )
     assert result_url.file_url == "https://example.com/nom151.zip"
     assert calls[0]["headers"]["Accept"] == "application/json"
 
@@ -151,7 +169,10 @@ def test_nom151_response_modes_and_conflict_validation():
         }
     }
     api_client, calls = api_client_with_response(
-        FakeRestResponse(body=json.dumps(certificate).encode(), headers={"Content-Type": "application/json"})
+        FakeRestResponse(
+            body=json.dumps(certificate).encode(),
+            headers={"Content-Type": "application/json"},
+        )
     )
     result_certificate = cast(
         Nom151CertificateResponse,

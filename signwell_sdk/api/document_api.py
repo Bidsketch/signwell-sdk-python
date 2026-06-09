@@ -13,12 +13,8 @@ Do not edit the class manually.
 from __future__ import annotations
 
 import warnings
-from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
+from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt, StrictBool
 from typing import Any, Dict, List, Optional, Tuple, Union
-from typing_extensions import Annotated
-
-from pydantic import Field, StrictBool, StrictStr
-from typing import Optional
 from typing_extensions import Annotated
 from signwell_sdk.models.completed_pdf_response import CompletedPdfResponse
 from signwell_sdk.models.document_from_template_request import DocumentFromTemplateRequest
@@ -30,10 +26,7 @@ from signwell_sdk.models.file_format import FileFormat
 from signwell_sdk.models.send_reminder_request import SendReminderRequest
 from signwell_sdk.models.update_document_and_send_request import UpdateDocumentAndSendRequest
 from signwell_sdk.models.update_recipients_request import UpdateRecipientsRequest
-
 from signwell_sdk.models.completed_pdf_url_response import CompletedPdfUrlResponse
-
-
 from signwell_sdk.api_client import ApiClient, RequestSerialized
 from signwell_sdk.api_response import ApiResponse
 from signwell_sdk.rest import RESTResponseType

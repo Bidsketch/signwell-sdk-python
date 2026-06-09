@@ -25,4 +25,3 @@ downloads/
 .openapi-generator/
 .openapi-generator-ignore
 openapi.yaml
-/docs

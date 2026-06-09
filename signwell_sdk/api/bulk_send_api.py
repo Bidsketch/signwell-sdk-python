@@ -13,12 +13,8 @@ Do not edit the class manually.
 from __future__ import annotations
 
 import warnings
-from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
+from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt, StrictBool, StrictBytes
 from typing import Any, Dict, List, Optional, Tuple, Union
-from typing_extensions import Annotated
-
-from pydantic import Field, StrictBool, StrictBytes, StrictStr
-from typing import List, Optional, Tuple, Union
 from typing_extensions import Annotated
 from signwell_sdk.models.bulk_send_create_response import BulkSendCreateResponse
 from signwell_sdk.models.bulk_send_csv_request import BulkSendCsvRequest
@@ -27,10 +23,7 @@ from signwell_sdk.models.bulk_send_list_response import BulkSendListResponse
 from signwell_sdk.models.bulk_send_response import BulkSendResponse
 from signwell_sdk.models.bulk_send_validate_csv_response import BulkSendValidateCsvResponse
 from signwell_sdk.models.create_bulk_send_request import CreateBulkSendRequest
-
 from signwell_sdk.models.bulk_send_csv_template_response import BulkSendCsvTemplateResponse
-
-
 from signwell_sdk.api_client import ApiClient, RequestSerialized
 from signwell_sdk.api_response import ApiResponse
 from signwell_sdk.rest import RESTResponseType

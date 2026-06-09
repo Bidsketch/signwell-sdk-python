@@ -20,7 +20,7 @@ import os
 import re
 import tempfile
 
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 from typing import Tuple, Optional, List, Dict, Union
 from pydantic import SecretStr
 
@@ -240,19 +240,10 @@ class ApiClient:
         :return: RESTResponse
         """
 
-        try:
-            # perform request and return response
-            response_data = self.rest_client.request(
-                method,
-                url,
-                headers=header_params,
-                body=body,
-                post_params=post_params,
-                _request_timeout=_request_timeout,
-            )
-
-        except ApiException as e:
-            raise e
+        # perform request and return response
+        response_data = self.rest_client.request(
+            method, url, headers=header_params, body=body, post_params=post_params, _request_timeout=_request_timeout
+        )
 
         return response_data
 
@@ -277,26 +268,25 @@ class ApiClient:
         # deserialize response data
         response_text = None
         return_data = None
-        try:
-            if response_type in ("bytes", "bytearray"):
-                return_data = response_data.data
-            elif response_type == "file":
-                return_data = self.__deserialize_file(response_data)
-            elif response_type is not None:
-                match = None
-                content_type = response_data.getheader("content-type")
-                if content_type is not None:
-                    match = re.search(r"charset=([a-zA-Z\-\d]+)[\s;]?", content_type)
-                encoding = match.group(1) if match else "utf-8"
-                response_text = response_data.data.decode(encoding)
-                return_data = self.deserialize(response_text, response_type, content_type)
-        finally:
-            if not 200 <= response_data.status <= 299:
-                raise ApiException.from_response(
-                    http_resp=response_data,
-                    body=response_text,
-                    data=return_data,
-                )
+        if response_type in ("bytes", "bytearray"):
+            return_data = response_data.data
+        elif response_type == "file":
+            return_data = self.__deserialize_file(response_data)
+        elif response_type is not None:
+            match = None
+            content_type = response_data.getheader("content-type")
+            if content_type is not None:
+                match = re.search(r"charset=([a-zA-Z\-\d]+)[\s;]?", content_type)
+            encoding = match.group(1) if match else "utf-8"
+            response_text = response_data.data.decode(encoding)
+            return_data = self.deserialize(response_text, response_type, content_type)
+
+        if not 200 <= response_data.status <= 299:
+            ApiException.from_response(
+                http_resp=response_data,
+                body=response_text,
+                data=return_data,
+            )
 
         return ApiResponse(
             status_code=response_data.status,
@@ -621,9 +611,9 @@ class ApiClient:
         suffix = ""
         content_disposition = response.getheader("Content-Disposition")
         if content_disposition:
-            m = re.search(r'filename=[\'"]?([^\'"\s]+)[\'"]?', content_disposition)
-            if m is not None:
-                filename = self.__sanitize_download_filename(m.group(1))
+            disposition_filename = self.__content_disposition_filename(content_disposition)
+            if disposition_filename:
+                filename = self.__sanitize_download_filename(disposition_filename)
                 if filename:
                     filename_prefix, filename_suffix = os.path.splitext(filename)
                     if filename_prefix:
@@ -641,6 +631,42 @@ class ApiClient:
             f.write(response.data)
 
         return path
+
+    @staticmethod
+    def __content_disposition_filename(content_disposition):
+        """Return the filename parameter from Content-Disposition, if present."""
+        filename_star = re.search(
+            r'(?:^|;)\s*filename\*\s*=\s*("[^"]*"|[^;]*)',
+            content_disposition,
+            re.IGNORECASE,
+        )
+        if filename_star:
+            value = filename_star.group(1).strip().strip('"')
+            try:
+                charset, _language, encoded_filename = value.split("'", 2)
+            except ValueError:
+                return unquote(value, errors="replace")
+            if charset:
+                return unquote(encoded_filename, encoding=charset, errors="replace")
+            return unquote(encoded_filename, errors="replace")
+
+        quoted_filename = re.search(
+            r'(?:^|;)\s*filename\s*=\s*"((?:\\.|[^"\\])*)"',
+            content_disposition,
+            re.IGNORECASE,
+        )
+        if quoted_filename:
+            return re.sub(r"\\(.)", r"\1", quoted_filename.group(1))
+
+        token_filename = re.search(
+            r"(?:^|;)\s*filename\s*=\s*([^;]*)",
+            content_disposition,
+            re.IGNORECASE,
+        )
+        if token_filename:
+            return token_filename.group(1).strip()
+
+        return None
 
     @staticmethod
     def __sanitize_download_filename(filename):

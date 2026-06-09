@@ -4,7 +4,7 @@ import http.client as httplib
 import logging
 import os
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, NoReturn, cast, get_type_hints
 
 import pytest
 
@@ -50,6 +50,8 @@ class FakePoolManager:
     [
         'attachment; filename="../../evil.pdf"',
         'attachment; filename="subdir\\\\evil.pdf"',
+        'attachment; filename="my document.pdf"',
+        "attachment; filename*=UTF-8''my%20doc.pdf",
     ],
 )
 def test_file_downloads_stay_confined_to_temp_dir(tmp_path: Path, content_disposition: str) -> None:
@@ -71,12 +73,56 @@ def test_file_downloads_stay_confined_to_temp_dir(tmp_path: Path, content_dispos
     assert os.sep not in result_path.name
 
 
+def test_content_disposition_filename_supports_spaces_and_rfc6266_filename_star(tmp_path: Path) -> None:
+    configuration = cast(Any, signwell_sdk.Configuration())
+    configuration.temp_folder_path = str(tmp_path)
+    api_client = signwell_sdk.ApiClient(configuration)
+
+    spaced_response = FakeRestResponse(
+        body=b"download-data",
+        headers={"Content-Disposition": 'attachment; filename="my document.pdf"'},
+    )
+    encoded_response = FakeRestResponse(
+        body=b"download-data",
+        headers={"Content-Disposition": "attachment; filename*=UTF-8''signed%20copy.pdf"},
+    )
+
+    spaced_path = Path(api_client.response_deserialize(cast(rest.RESTResponse, spaced_response), {"200": "file"}).data)
+    encoded_path = Path(
+        api_client.response_deserialize(cast(rest.RESTResponse, encoded_response), {"200": "file"}).data
+    )
+
+    assert spaced_path.name.startswith("my_document-")
+    assert spaced_path.name.endswith(".pdf")
+    assert encoded_path.name.startswith("signed_copy-")
+    assert encoded_path.name.endswith(".pdf")
+
+
 def test_unread_response_data_raises_sdk_value_error() -> None:
     api_client = signwell_sdk.ApiClient(signwell_sdk.Configuration())
     response = FakeRestResponse(body=None)
 
     with pytest.raises(signwell_sdk.ApiValueError, match="RESTResponse.read"):
         api_client.response_deserialize(cast(rest.RESTResponse, response), {"200": "str"})
+
+
+def test_error_response_deserialization_errors_are_not_replaced_by_status_errors() -> None:
+    api_client = signwell_sdk.ApiClient(signwell_sdk.Configuration())
+    response = FakeRestResponse(
+        status=400,
+        reason="Bad Request",
+        body=b"not-json",
+        headers={"content-type": "application/octet-stream"},
+    )
+
+    with pytest.raises(signwell_sdk.UnsupportedContentTypeError, match="Unsupported content type"):
+        api_client.response_deserialize(cast(rest.RESTResponse, response), {"400": "ErrorResponse"})
+
+
+def test_api_exception_from_response_is_typed_as_no_return() -> None:
+    hints = get_type_hints(signwell_sdk.ApiException.from_response)
+
+    assert hints["return"] is NoReturn
 
 
 def test_invalid_http_method_raises_sdk_value_error() -> None:

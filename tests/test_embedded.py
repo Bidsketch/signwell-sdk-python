@@ -17,7 +17,10 @@ class FakeDocumentApi:
         self.created_document = request
         return SimpleNamespace(
             recipients=[
-                SimpleNamespace(email="jane@example.com", embedded_signing_url="https://www.signwell.com/docs/abc")
+                SimpleNamespace(
+                    email="jane@example.com",
+                    embedded_signing_url="https://www.signwell.com/docs/abc",
+                )
             ]
         )
 
@@ -81,7 +84,13 @@ def test_validates_file_inputs():
     with pytest.raises(ValueError, match="exactly one"):
         Embedded.create_requesting_document(
             name="NDA",
-            files=[{"name": "nda.pdf", "file_url": "https://example.com/nda.pdf", "file_base64": "ZGF0YQ=="}],
+            files=[
+                {
+                    "name": "nda.pdf",
+                    "file_url": "https://example.com/nda.pdf",
+                    "file_base64": "ZGF0YQ==",
+                }
+            ],
             recipients=[{"name": "Jane Doe", "email": "jane@example.com"}],
             options={"document_api": FakeDocumentApi()},
         )
@@ -123,3 +132,40 @@ def test_iframe_helpers_validate_urls_and_handlers():
             url="https://www.signwell.com/docs/abc",
             events={"completed": "constructor.alert"},
         )
+
+
+def test_iframe_helpers_escape_json_for_script_tag_context():
+    html = Embedded.signing_iframe(
+        url="https://www.signwell.com/docs/abc",
+        container_id='signwell"></script><img src=x onerror=alert(1)>',
+        events={"completed</script><img src=x onerror=alert(1)>": "App.signWell.completed"},
+    )
+
+    script_body = html.removeprefix("<script>\n").removesuffix("\n</script>")
+
+    assert "</script>" not in script_body.lower()
+    assert "\\u003c/script\\u003e" in html
+    assert "\\u003cimg src=x onerror=alert(1)\\u003e" in html
+
+
+def test_redirect_urls_require_explicit_allowed_hosts():
+    with pytest.raises(ValueError, match="allowed_redirect_hosts"):
+        Embedded.signing_iframe(
+            url="https://www.signwell.com/docs/abc",
+            redirect_url="https://app.example.com/done",
+        )
+
+    with pytest.raises(ValueError, match="Redirect URL host"):
+        Embedded.requesting_iframe(
+            url="https://www.signwell.com/docs/abc",
+            redirect_url="https://evil.example.com/done",
+            allowed_redirect_hosts=["app.example.com"],
+        )
+
+    html = Embedded.requesting_iframe(
+        url="https://www.signwell.com/docs/abc",
+        redirect_url="https://APP.EXAMPLE.COM/done",
+        allowed_redirect_hosts=["app.example.com"],
+    )
+
+    assert "https://APP.EXAMPLE.COM/done" in html

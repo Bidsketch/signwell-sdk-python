@@ -16,16 +16,10 @@ import warnings
 from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
-
-from pydantic import Field, StrictStr
-from typing import Optional
-from typing_extensions import Annotated
 from signwell_sdk.models.document_template_list_response import DocumentTemplateListResponse
 from signwell_sdk.models.document_template_request import DocumentTemplateRequest
 from signwell_sdk.models.document_template_response import DocumentTemplateResponse
 from signwell_sdk.models.document_template_update_request import DocumentTemplateUpdateRequest
-
-
 from signwell_sdk.api_client import ApiClient, RequestSerialized
 from signwell_sdk.api_response import ApiResponse
 from signwell_sdk.rest import RESTResponseType

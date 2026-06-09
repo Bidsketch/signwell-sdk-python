@@ -16,7 +16,11 @@ class ReplayStore(Protocol):
 
 
 class MemoryReplayStore:
-    """Small replay store for local development and single-process apps."""
+    """Small replay store for local development and single-process apps.
+
+    When capacity is exhausted by still-live entries, new events fail closed
+    instead of evicting active replay keys.
+    """
 
     def __init__(
         self,
@@ -42,9 +46,8 @@ class MemoryReplayStore:
             if key in self._entries:
                 return False
 
-            while len(self._entries) >= self._max_entries:
-                oldest = next(iter(self._entries))
-                del self._entries[oldest]
+            if len(self._entries) >= self._max_entries:
+                return False
 
             self._entries[key] = float(expires_at_unix_seconds)
             return True
@@ -74,7 +77,7 @@ def verify_event_once(
     event: Mapping[str, Any],
     webhook_id: str,
     replay_store: ReplayStore,
-    tolerance_seconds: float,
+    tolerance_seconds: float | None,
     now: Callable[[], float] | None = None,
 ) -> bool:
     try:
@@ -95,7 +98,7 @@ def verify_event_once_or_raise(
     event: Mapping[str, Any],
     webhook_id: str,
     replay_store: ReplayStore,
-    tolerance_seconds: float,
+    tolerance_seconds: float | None,
     now: Callable[[], float] | None = None,
 ) -> bool:
     if tolerance_seconds is None:
@@ -111,7 +114,7 @@ def verify_event_once_or_raise(
     )
     expires_at = float(parsed["time"]) + float(tolerance_seconds)
     if not replay_store.add(_replay_key_from_parsed(parsed), expires_at):
-        raise ValueError("webhook event has already been processed")
+        raise ValueError("webhook event has already been processed or replay store capacity was exceeded")
     return True
 
 
@@ -166,7 +169,11 @@ def _parse_event(event: Mapping[str, Any]) -> dict[str, Any]:
     event_hash = event.get("hash")
     missing = [
         key
-        for key, value in (("type", event_type), ("time", event_time), ("hash", event_hash))
+        for key, value in (
+            ("type", event_type),
+            ("time", event_time),
+            ("hash", event_hash),
+        )
         if value is None or value == ""
     ]
     if missing:
@@ -204,4 +211,4 @@ def _replay_key_from_parsed(event: Mapping[str, Any]) -> str:
 
 
 def _current_unix_time() -> float:
-    return float(int(time_module.time()))
+    return time_module.time()

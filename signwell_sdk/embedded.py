@@ -11,7 +11,9 @@ from urllib.parse import urlparse
 
 from signwell_sdk.api.document_api import DocumentApi
 from signwell_sdk.api_client import ApiClient
-from signwell_sdk.models.document_from_template_request import DocumentFromTemplateRequest
+from signwell_sdk.models.document_from_template_request import (
+    DocumentFromTemplateRequest,
+)
 from signwell_sdk.models.document_request import DocumentRequest
 from signwell_sdk.models.fields_inner_inner import FieldsInnerInner
 from signwell_sdk.models.files_inner import FilesInner
@@ -152,7 +154,10 @@ def signing_iframe(
             "showHeader": show_header,
             "allowDownload": allow_download,
         },
-        redirects={"redirectUrl": redirect_url, "declineRedirectUrl": decline_redirect_url},
+        redirects={
+            "redirectUrl": redirect_url,
+            "declineRedirectUrl": decline_redirect_url,
+        },
     )
     return _build_embed_script(options, events or {}, auto_open)
 
@@ -202,7 +207,9 @@ def _build_recipients(recipients: Sequence[Mapping[str, Any]]) -> list[Recipient
     return [RecipientsInner(**_recipient_attrs(recipient, index)) for index, recipient in enumerate(recipients)]
 
 
-def _build_template_recipients(recipients: Sequence[Mapping[str, Any]]) -> list[TemplateRecipientsInner]:
+def _build_template_recipients(
+    recipients: Sequence[Mapping[str, Any]],
+) -> list[TemplateRecipientsInner]:
     built = []
     for index, recipient in enumerate(recipients):
         attrs = _recipient_attrs(recipient, index)
@@ -305,11 +312,11 @@ def _build_iframe_options(
 
 
 def _build_embed_script(options: Mapping[str, Any], events: Mapping[str, str], auto_open: bool) -> str:
-    options_json = json.dumps(options, separators=(",", ":"))
+    options_json = _html_safe_json(options)
     lines = [f"var signwellEmbed = new SignWellEmbed({options_json});"]
     for event_name, handler_path in events.items():
         if handler_path:
-            safe_event = json.dumps(event_name)
+            safe_event = _html_safe_json(event_name)
             lines.append(f"signwellEmbed.on({safe_event}, {_validate_handler_path(handler_path)});")
     if auto_open:
         lines.append("signwellEmbed.open();")
@@ -317,10 +324,16 @@ def _build_embed_script(options: Mapping[str, Any], events: Mapping[str, str], a
     return f"<script>\n{body}\n</script>"
 
 
+def _html_safe_json(value: Any) -> str:
+    return (
+        json.dumps(value, separators=(",", ":")).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+    )
+
+
 def _validate_embed_url(url: str, allowed_hosts: Sequence[str] | None) -> str:
     parsed = _parse_https_url(url)
-    host = parsed.hostname or ""
-    allowed = set(allowed_hosts or ())
+    host = (parsed.hostname or "").lower()
+    allowed = {allowed_host.lower() for allowed_host in allowed_hosts or ()}
     if host not in DEFAULT_SIGNWELL_HOSTS and not host.endswith(".signwell.com") and host not in allowed:
         raise ValueError("Embedded URLs must be SignWell-hosted unless explicitly allowed")
     return url
@@ -328,7 +341,10 @@ def _validate_embed_url(url: str, allowed_hosts: Sequence[str] | None) -> str:
 
 def _validate_redirect_url(url: str, allowed_hosts: Sequence[str] | None) -> str:
     parsed = _parse_https_url(url)
-    if allowed_hosts is not None and parsed.hostname not in set(allowed_hosts):
+    if allowed_hosts is None:
+        raise ValueError("allowed_redirect_hosts is required when passing redirect URLs")
+    allowed = {allowed_host.lower() for allowed_host in allowed_hosts}
+    if (parsed.hostname or "").lower() not in allowed:
         raise ValueError("Redirect URL host is not allowed")
     return url
 
