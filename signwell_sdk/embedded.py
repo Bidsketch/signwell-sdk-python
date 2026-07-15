@@ -315,9 +315,11 @@ def _build_embed_script(options: Mapping[str, Any], events: Mapping[str, str], a
     options_json = _html_safe_json(options)
     lines = [f"var signwellEmbed = new SignWellEmbed({options_json});"]
     for event_name, handler_path in events.items():
-        if handler_path:
-            safe_event = _html_safe_json(event_name)
-            lines.append(f"signwellEmbed.on({safe_event}, {_validate_handler_path(handler_path)});")
+        if handler_path is None:
+            continue
+        path = _validate_handler_path(str(handler_path).strip())
+        safe_event = _html_safe_json(event_name)
+        lines.append(f"signwellEmbed.on({safe_event}, {path});")
     if auto_open:
         lines.append("signwellEmbed.open();")
     body = "\n".join(lines)

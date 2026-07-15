@@ -16,6 +16,7 @@ import warnings
 from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt, StrictBool
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
+from collections.abc import Iterator
 from signwell_sdk.models.completed_pdf_response import CompletedPdfResponse
 from signwell_sdk.models.document_from_template_request import DocumentFromTemplateRequest
 from signwell_sdk.models.document_from_template_response import DocumentFromTemplateResponse
@@ -30,6 +31,14 @@ from signwell_sdk.models.completed_pdf_url_response import CompletedPdfUrlRespon
 from signwell_sdk.api_client import ApiClient, RequestSerialized
 from signwell_sdk.api_response import ApiResponse
 from signwell_sdk.rest import RESTResponseType
+
+import time
+
+
+class WaitForCompletionTimeoutError(TimeoutError):
+    def __init__(self, message: str, last_document: DocumentResponse | None = None) -> None:
+        super().__init__(message)
+        self.last_document = last_document
 
 
 class DocumentApi:
@@ -539,7 +548,7 @@ class DocumentApi:
     @validate_call
     def delete_document(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -598,7 +607,7 @@ class DocumentApi:
     @validate_call
     def delete_document_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -657,7 +666,7 @@ class DocumentApi:
     @validate_call
     def delete_document_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -762,7 +771,7 @@ class DocumentApi:
     @validate_call
     def get_completed_pdf(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         url_only: StrictBool | None = None,
         audit_page: StrictBool | None = None,
         file_format: FileFormat | None = None,
@@ -842,7 +851,7 @@ class DocumentApi:
     @validate_call
     def get_completed_pdf_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         url_only: StrictBool | None = None,
         audit_page: StrictBool | None = None,
         file_format: FileFormat | None = None,
@@ -922,7 +931,7 @@ class DocumentApi:
     @validate_call
     def get_completed_pdf_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         url_only: StrictBool | None = None,
         audit_page: StrictBool | None = None,
         file_format: FileFormat | None = None,
@@ -1063,7 +1072,7 @@ class DocumentApi:
     @validate_call
     def get_document(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1122,7 +1131,7 @@ class DocumentApi:
     @validate_call
     def get_document_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1181,7 +1190,7 @@ class DocumentApi:
     @validate_call
     def get_document_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1288,6 +1297,12 @@ class DocumentApi:
         self,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
+        query: Annotated[
+            Annotated[str, Field(min_length=1, strict=True)] | None,
+            Field(
+                description='Raw API filter query. Use AND between filters, for example: "name:Classic AND status:completed".'
+            ),
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1306,6 +1321,8 @@ class DocumentApi:
         :type page: int
         :param limit:
         :type limit: int
+        :param query: Raw API filter query. Use AND between filters, for example: \"name:Classic AND status:completed\".
+        :type query: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1331,6 +1348,7 @@ class DocumentApi:
         _param = self._list_documents_serialize(
             page=page,
             limit=limit,
+            query=query,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1355,6 +1373,12 @@ class DocumentApi:
         self,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
+        query: Annotated[
+            Annotated[str, Field(min_length=1, strict=True)] | None,
+            Field(
+                description='Raw API filter query. Use AND between filters, for example: "name:Classic AND status:completed".'
+            ),
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1373,6 +1397,8 @@ class DocumentApi:
         :type page: int
         :param limit:
         :type limit: int
+        :param query: Raw API filter query. Use AND between filters, for example: \"name:Classic AND status:completed\".
+        :type query: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1398,6 +1424,7 @@ class DocumentApi:
         _param = self._list_documents_serialize(
             page=page,
             limit=limit,
+            query=query,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1422,6 +1449,12 @@ class DocumentApi:
         self,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
+        query: Annotated[
+            Annotated[str, Field(min_length=1, strict=True)] | None,
+            Field(
+                description='Raw API filter query. Use AND between filters, for example: "name:Classic AND status:completed".'
+            ),
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1440,6 +1473,8 @@ class DocumentApi:
         :type page: int
         :param limit:
         :type limit: int
+        :param query: Raw API filter query. Use AND between filters, for example: \"name:Classic AND status:completed\".
+        :type query: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1465,6 +1500,7 @@ class DocumentApi:
         _param = self._list_documents_serialize(
             page=page,
             limit=limit,
+            query=query,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1484,6 +1520,7 @@ class DocumentApi:
         self,
         page,
         limit,
+        query,
         _request_auth,
         _content_type,
         _headers,
@@ -1508,6 +1545,9 @@ class DocumentApi:
 
         if limit is not None:
             _query_params.append(("limit", limit))
+
+        if query is not None:
+            _query_params.append(("query", query))
 
         # process the header parameters
         # process the form parameters
@@ -1538,7 +1578,7 @@ class DocumentApi:
     @validate_call
     def send_document(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         update_document_and_send_request: UpdateDocumentAndSendRequest,
         _request_timeout: Union[
             None,
@@ -1605,7 +1645,7 @@ class DocumentApi:
     @validate_call
     def send_document_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         update_document_and_send_request: UpdateDocumentAndSendRequest,
         _request_timeout: Union[
             None,
@@ -1672,7 +1712,7 @@ class DocumentApi:
     @validate_call
     def send_document_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         update_document_and_send_request: UpdateDocumentAndSendRequest,
         _request_timeout: Union[
             None,
@@ -1796,7 +1836,7 @@ class DocumentApi:
     @validate_call
     def send_reminder(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         send_reminder_request: SendReminderRequest,
         _request_timeout: Union[
             None,
@@ -1864,7 +1904,7 @@ class DocumentApi:
     @validate_call
     def send_reminder_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         send_reminder_request: SendReminderRequest,
         _request_timeout: Union[
             None,
@@ -1932,7 +1972,7 @@ class DocumentApi:
     @validate_call
     def send_reminder_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         send_reminder_request: SendReminderRequest,
         _request_timeout: Union[
             None,
@@ -2057,7 +2097,7 @@ class DocumentApi:
     @validate_call
     def update_recipients(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         update_recipients_request: UpdateRecipientsRequest,
         _request_timeout: Union[
             None,
@@ -2127,7 +2167,7 @@ class DocumentApi:
     @validate_call
     def update_recipients_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         update_recipients_request: UpdateRecipientsRequest,
         _request_timeout: Union[
             None,
@@ -2197,7 +2237,7 @@ class DocumentApi:
     @validate_call
     def update_recipients_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         update_recipients_request: UpdateRecipientsRequest,
         _request_timeout: Union[
             None,
@@ -2320,3 +2360,66 @@ class DocumentApi:
             _host=_host,
             _request_auth=_request_auth,
         )
+
+    def wait_for_completion(
+        self,
+        id: str,
+        *,
+        interval: float = 2.0,
+        timeout: float = 120.0,
+        max_attempts: int | None = None,
+        terminal_statuses: tuple[str, ...] | None = None,
+        **kwargs: Any,
+    ) -> DocumentResponse:
+        terminal = terminal_statuses or (
+            "Completed",
+            "Manually completed",
+            "Declined",
+            "Canceled",
+            "Bounced",
+            "Blocked",
+            "Error",
+            "Expired",
+        )
+        started_at = time.monotonic()
+        attempts = 0
+        last_document: DocumentResponse | None = None
+
+        while True:
+            last_document = self.get_document(id, **kwargs)
+            status = getattr(last_document, "status", None)
+            if isinstance(status, str) and status in terminal:
+                return last_document
+
+            attempts += 1
+            if (max_attempts is not None and attempts >= max_attempts) or time.monotonic() - started_at >= timeout:
+                raise WaitForCompletionTimeoutError("Timed out waiting for document completion.", last_document)
+
+            time.sleep(max(0.0, interval))
+
+    def iterate_document_pages(
+        self,
+        page: int | None = 1,
+        limit: int | None = 50,
+        query: str | None = None,
+        **kwargs: Any,
+    ) -> Iterator[DocumentListResponse]:
+        next_page: int | None = page or 1
+        while next_page is not None:
+            response = self.list_documents(page=next_page, limit=limit, query=query, **kwargs)
+            yield response
+            next_page = getattr(response, "next_page", None)
+
+    def iterate_documents(
+        self,
+        page: int | None = 1,
+        limit: int | None = 50,
+        query: str | None = None,
+        **kwargs: Any,
+    ) -> Iterator[Any]:
+        for page_response in self.iterate_document_pages(page=page, limit=limit, query=query, **kwargs):
+            yield from getattr(page_response, "documents", None) or []
+
+    def update_document(self, *args: Any, **kwargs: Any) -> Any:
+        """Alias for send_document."""
+        return self.send_document(*args, **kwargs)
