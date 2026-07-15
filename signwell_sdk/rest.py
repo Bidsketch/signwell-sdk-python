@@ -17,7 +17,7 @@ import ssl
 
 import urllib3
 
-from signwell_sdk.exceptions import ApiException, ApiTimeoutError, ApiValueError, TransportError
+from signwell_sdk.exceptions import ApiConnectionError, ApiException, ApiTimeoutError, ApiValueError
 
 SUPPORTED_SOCKS_PROXIES = {"socks5", "socks5h", "socks4", "socks4a"}
 RESTResponseType = urllib3.HTTPResponse
@@ -204,6 +204,6 @@ class RESTClientObject:
             raise ApiTimeoutError(status=0, reason=msg) from e
         except urllib3.exceptions.HTTPError as e:
             msg = "\n".join([type(e).__name__, str(e)])
-            raise TransportError(status=0, reason=msg) from e
+            raise ApiConnectionError(status=0, reason=msg) from e
 
         return RESTResponse(r)

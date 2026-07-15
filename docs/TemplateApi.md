@@ -260,7 +260,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_templates**
-> DocumentTemplateListResponse list_templates(page=page, limit=limit)
+> DocumentTemplateListResponse list_templates(page=page, limit=limit, query=query)
 
 List Templates
 
@@ -301,10 +301,11 @@ with signwell_sdk.ApiClient(configuration) as api_client:
     api_instance = signwell_sdk.TemplateApi(api_client)
     page = 1 # int |  (optional) (default to 1)
     limit = 10 # int |  (optional) (default to 10)
+    query = 'query_example' # str | Raw API filter query. Use AND between filters, for example: \"name:Classic AND status:Available\". (optional)
 
     try:
         # List Templates
-        api_response = api_instance.list_templates(page=page, limit=limit)
+        api_response = api_instance.list_templates(page=page, limit=limit, query=query)
         print("The response of TemplateApi->list_templates:\n")
         pprint(api_response)
     except Exception as e:
@@ -320,6 +321,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **page** | **int**|  | [optional] [default to 1]
  **limit** | **int**|  | [optional] [default to 10]
+ **query** | **str**| Raw API filter query. Use AND between filters, for example: \&quot;name:Classic AND status:Available\&quot;. | [optional] 
 
 ### Return type
 

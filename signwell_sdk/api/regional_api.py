@@ -38,7 +38,7 @@ class RegionalApi:
     @validate_call
     def get_nom151_certificate(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         url_only: Annotated[
             StrictBool | None,
             Field(description="If true, returns JSON with download URL instead of downloading the file"),
@@ -122,7 +122,7 @@ class RegionalApi:
     @validate_call
     def get_nom151_certificate_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         url_only: Annotated[
             StrictBool | None,
             Field(description="If true, returns JSON with download URL instead of downloading the file"),
@@ -206,7 +206,7 @@ class RegionalApi:
     @validate_call
     def get_nom151_certificate_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         url_only: Annotated[
             StrictBool | None,
             Field(description="If true, returns JSON with download URL instead of downloading the file"),
