@@ -16,6 +16,7 @@ import warnings
 from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
+from collections.abc import Iterator
 from signwell_sdk.models.document_template_list_response import DocumentTemplateListResponse
 from signwell_sdk.models.document_template_request import DocumentTemplateRequest
 from signwell_sdk.models.document_template_response import DocumentTemplateResponse
@@ -286,7 +287,7 @@ class TemplateApi:
     @validate_call
     def delete_template(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -345,7 +346,7 @@ class TemplateApi:
     @validate_call
     def delete_template_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -404,7 +405,7 @@ class TemplateApi:
     @validate_call
     def delete_template_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -509,7 +510,7 @@ class TemplateApi:
     @validate_call
     def get_template(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -568,7 +569,7 @@ class TemplateApi:
     @validate_call
     def get_template_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -627,7 +628,7 @@ class TemplateApi:
     @validate_call
     def get_template_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -734,6 +735,12 @@ class TemplateApi:
         self,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
+        query: Annotated[
+            Annotated[str, Field(min_length=1, strict=True)] | None,
+            Field(
+                description='Raw API filter query. Use AND between filters, for example: "name:Classic AND status:Available".'
+            ),
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -752,6 +759,8 @@ class TemplateApi:
         :type page: int
         :param limit:
         :type limit: int
+        :param query: Raw API filter query. Use AND between filters, for example: \"name:Classic AND status:Available\".
+        :type query: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -777,6 +786,7 @@ class TemplateApi:
         _param = self._list_templates_serialize(
             page=page,
             limit=limit,
+            query=query,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -801,6 +811,12 @@ class TemplateApi:
         self,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
+        query: Annotated[
+            Annotated[str, Field(min_length=1, strict=True)] | None,
+            Field(
+                description='Raw API filter query. Use AND between filters, for example: "name:Classic AND status:Available".'
+            ),
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -819,6 +835,8 @@ class TemplateApi:
         :type page: int
         :param limit:
         :type limit: int
+        :param query: Raw API filter query. Use AND between filters, for example: \"name:Classic AND status:Available\".
+        :type query: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -844,6 +862,7 @@ class TemplateApi:
         _param = self._list_templates_serialize(
             page=page,
             limit=limit,
+            query=query,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -868,6 +887,12 @@ class TemplateApi:
         self,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
+        query: Annotated[
+            Annotated[str, Field(min_length=1, strict=True)] | None,
+            Field(
+                description='Raw API filter query. Use AND between filters, for example: "name:Classic AND status:Available".'
+            ),
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -886,6 +911,8 @@ class TemplateApi:
         :type page: int
         :param limit:
         :type limit: int
+        :param query: Raw API filter query. Use AND between filters, for example: \"name:Classic AND status:Available\".
+        :type query: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -911,6 +938,7 @@ class TemplateApi:
         _param = self._list_templates_serialize(
             page=page,
             limit=limit,
+            query=query,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -930,6 +958,7 @@ class TemplateApi:
         self,
         page,
         limit,
+        query,
         _request_auth,
         _content_type,
         _headers,
@@ -954,6 +983,9 @@ class TemplateApi:
 
         if limit is not None:
             _query_params.append(("limit", limit))
+
+        if query is not None:
+            _query_params.append(("query", query))
 
         # process the header parameters
         # process the form parameters
@@ -984,7 +1016,7 @@ class TemplateApi:
     @validate_call
     def update_template(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         document_template_update_request: DocumentTemplateUpdateRequest,
         _request_timeout: Union[
             None,
@@ -1052,7 +1084,7 @@ class TemplateApi:
     @validate_call
     def update_template_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         document_template_update_request: DocumentTemplateUpdateRequest,
         _request_timeout: Union[
             None,
@@ -1120,7 +1152,7 @@ class TemplateApi:
     @validate_call
     def update_template_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         document_template_update_request: DocumentTemplateUpdateRequest,
         _request_timeout: Union[
             None,
@@ -1241,3 +1273,26 @@ class TemplateApi:
             _host=_host,
             _request_auth=_request_auth,
         )
+
+    def iterate_template_pages(
+        self,
+        page: int | None = 1,
+        limit: int | None = 50,
+        query: str | None = None,
+        **kwargs: Any,
+    ) -> Iterator[DocumentTemplateListResponse]:
+        next_page: int | None = page or 1
+        while next_page is not None:
+            response = self.list_templates(page=next_page, limit=limit, query=query, **kwargs)
+            yield response
+            next_page = getattr(response, "next_page", None)
+
+    def iterate_templates(
+        self,
+        page: int | None = 1,
+        limit: int | None = 50,
+        query: str | None = None,
+        **kwargs: Any,
+    ) -> Iterator[Any]:
+        for page_response in self.iterate_template_pages(page=page, limit=limit, query=query, **kwargs):
+            yield from getattr(page_response, "templates", None) or []

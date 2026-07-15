@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, cast
 
 import pytest
 
 from signwell_sdk import Embedded
+from signwell_sdk.models.additional_fields_inner_inner_value import (
+    AdditionalFieldsInnerInnerValue,
+)
+from signwell_sdk.models.field_type import FieldType
+from signwell_sdk.models.fields_inner_inner import FieldsInnerInner
 
 
 class FakeDocumentApi:
@@ -133,6 +138,18 @@ def test_iframe_helpers_validate_urls_and_handlers():
             events={"completed": "constructor.alert"},
         )
 
+    with pytest.raises(ValueError, match="dot-separated"):
+        Embedded.signing_iframe(
+            url="https://www.signwell.com/docs/abc",
+            events={"completed": ""},
+        )
+
+    with pytest.raises(ValueError, match="dot-separated"):
+        Embedded.signing_iframe(
+            url="https://www.signwell.com/docs/abc",
+            events={"completed": "  "},
+        )
+
 
 def test_iframe_helpers_escape_json_for_script_tag_context():
     html = Embedded.signing_iframe(
@@ -169,3 +186,84 @@ def test_redirect_urls_require_explicit_allowed_hosts():
     )
 
     assert "https://APP.EXAMPLE.COM/done" in html
+
+
+def test_checkbox_field_values_normalize_to_api_values():
+    true_checkbox = FieldsInnerInner(
+        x=20,
+        y=60,
+        page=1,
+        recipient_id="1",
+        type=FieldType.CHECKBOX,
+        value=AdditionalFieldsInnerInnerValue(True),
+    )
+    assert true_checkbox.value is not None
+    assert true_checkbox.value.actual_instance == "t"
+    assert true_checkbox.to_dict()["value"] == "t"
+
+    false_checkbox = FieldsInnerInner(
+        x=20,
+        y=60,
+        page=1,
+        recipient_id="1",
+        type=FieldType.CHECKBOX,
+        value=AdditionalFieldsInnerInnerValue("false"),
+    )
+    assert false_checkbox.value is not None
+    assert false_checkbox.value.actual_instance == "f"
+    assert false_checkbox.to_dict()["value"] == "f"
+
+    for raw_value, expected in [(True, "t"), (False, "f"), ("true", "t"), ("t", "t"), ("false", "f"), ("f", "f")]:
+        checkbox = FieldsInnerInner(
+            x=20,
+            y=60,
+            page=1,
+            recipient_id="1",
+            type=FieldType.CHECKBOX,
+            value=cast(Any, raw_value),
+        )
+        assert checkbox.value is not None
+        assert checkbox.value.actual_instance == expected
+        assert checkbox.to_dict()["value"] == expected
+
+    for raw_value in ["yes", "1"]:
+        with pytest.raises(ValueError, match="Checkbox field values"):
+            FieldsInnerInner(
+                x=20,
+                y=60,
+                page=1,
+                recipient_id="1",
+                type=FieldType.CHECKBOX,
+                value=cast(Any, raw_value),
+            )
+
+    text = FieldsInnerInner(
+        x=20,
+        y=60,
+        page=1,
+        recipient_id="1",
+        type=FieldType.TEXT,
+        value=AdditionalFieldsInnerInnerValue("true"),
+    )
+    assert text.value is not None
+    assert text.value.actual_instance == "true"
+
+
+def test_embedded_helper_normalizes_checkbox_field_values():
+    api = FakeDocumentApi()
+
+    Embedded.create_signing_document(
+        name="Checklist",
+        files=[{"name": "checklist.pdf", "file_base64": "ZGF0YQ=="}],
+        recipients=[{"name": "Jane Doe", "email": "jane@example.com"}],
+        fields=[[{"x": 20, "y": 60, "page": 1, "type": "checkbox", "value": "true"}]],
+        test_mode=True,
+        options={"document_api": api},
+    )
+
+    created_document = api.created_document
+    assert created_document is not None
+    checkbox = created_document.fields[0][0]
+    assert checkbox.value is not None
+    assert checkbox.value.actual_instance == "t"
+    assert checkbox.to_dict()["value"] == "t"

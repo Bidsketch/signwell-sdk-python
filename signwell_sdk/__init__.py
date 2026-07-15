@@ -38,14 +38,18 @@ from signwell_sdk.exceptions import ApiKeyError
 from signwell_sdk.exceptions import ApiAttributeError
 from signwell_sdk.exceptions import ApiException
 from signwell_sdk.exceptions import ApiError
+from signwell_sdk.exceptions import ApiConnectionError
 from signwell_sdk.exceptions import ApiTimeoutError
 from signwell_sdk.exceptions import AuthenticationError
 from signwell_sdk.exceptions import BadRequestError
 from signwell_sdk.exceptions import ConflictError
+from signwell_sdk.exceptions import FetchError
 from signwell_sdk.exceptions import ForbiddenError
 from signwell_sdk.exceptions import InternalServerError
 from signwell_sdk.exceptions import NotFoundError
+from signwell_sdk.exceptions import PermissionDeniedError
 from signwell_sdk.exceptions import RateLimitError
+from signwell_sdk.exceptions import RequiredError
 from signwell_sdk.exceptions import TransportError
 from signwell_sdk.exceptions import UnprocessableEntityError
 from signwell_sdk.exceptions import UnsupportedContentTypeError
@@ -152,6 +156,14 @@ from signwell_sdk.models.webhook_response import WebhookResponse
 
 from signwell_sdk import embedded as Embedded
 from signwell_sdk import webhook as Webhook
+from signwell_sdk.embedded import create_requesting_document
+from signwell_sdk.embedded import create_signing_document
+from signwell_sdk.embedded import create_signing_document_from_template
+from signwell_sdk.embedded import embedded_signing_url
+from signwell_sdk.embedded import embedded_signing_urls
+from signwell_sdk.embedded import requesting_iframe
+from signwell_sdk.embedded import script_tag
+from signwell_sdk.embedded import signing_iframe
 
 Resources = SimpleNamespace(
     ApiApplicationApi=ApiApplicationApi,
@@ -259,13 +271,17 @@ Errors = SimpleNamespace(
     ApiException=ApiException,
     BadRequestError=BadRequestError,
     AuthenticationError=AuthenticationError,
+    PermissionDeniedError=PermissionDeniedError,
     ForbiddenError=ForbiddenError,
     NotFoundError=NotFoundError,
     ConflictError=ConflictError,
     UnprocessableEntityError=UnprocessableEntityError,
     RateLimitError=RateLimitError,
     InternalServerError=InternalServerError,
+    ApiConnectionError=ApiConnectionError,
     ApiTimeoutError=ApiTimeoutError,
+    FetchError=FetchError,
+    RequiredError=RequiredError,
     TransportError=TransportError,
     UnsupportedContentTypeError=UnsupportedContentTypeError,
 )

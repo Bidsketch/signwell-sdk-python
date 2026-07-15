@@ -290,7 +290,7 @@ class BulkSendApi:
     @validate_call
     def get_bulk_send(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -350,7 +350,7 @@ class BulkSendApi:
     @validate_call
     def get_bulk_send_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -410,7 +410,7 @@ class BulkSendApi:
     @validate_call
     def get_bulk_send_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -791,7 +791,7 @@ class BulkSendApi:
     @validate_call
     def get_bulk_send_documents(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         _request_timeout: Union[
@@ -863,7 +863,7 @@ class BulkSendApi:
     @validate_call
     def get_bulk_send_documents_with_http_info(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         _request_timeout: Union[
@@ -935,7 +935,7 @@ class BulkSendApi:
     @validate_call
     def get_bulk_send_documents_without_preload_content(
         self,
-        id: StrictStr,
+        id: Annotated[str, Field(min_length=1, strict=True)],
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
         _request_timeout: Union[
@@ -1064,7 +1064,7 @@ class BulkSendApi:
         user_email: StrictStr | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
-        api_application_id: StrictStr | None = None,
+        api_application_id: Annotated[str, Field(min_length=1, strict=True)] | None = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1139,7 +1139,7 @@ class BulkSendApi:
         user_email: StrictStr | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
-        api_application_id: StrictStr | None = None,
+        api_application_id: Annotated[str, Field(min_length=1, strict=True)] | None = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1214,7 +1214,7 @@ class BulkSendApi:
         user_email: StrictStr | None = None,
         limit: Annotated[int, Field(le=50, strict=True, ge=1)] | None = None,
         page: Annotated[int, Field(strict=True, ge=1)] | None = None,
-        api_application_id: StrictStr | None = None,
+        api_application_id: Annotated[str, Field(min_length=1, strict=True)] | None = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],

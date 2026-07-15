@@ -22,7 +22,8 @@ from signwell_sdk.models.date_format import DateFormat
 from signwell_sdk.models.dropdown_option import DropdownOption
 from signwell_sdk.models.field_type import FieldType
 from signwell_sdk.models.text_validation import TextValidation
-from typing import Any, Optional, Set
+from pydantic import model_validator
+from typing import Any, Optional, Set, get_args
 from typing_extensions import Self
 
 
@@ -114,6 +115,60 @@ class AdditionalFieldsInnerInner(BaseModel):
         "default_option",
         "allow_other",
     ]
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_checkbox_value_input(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+        if cls._field_type_value(data.get("type")) != "checkbox":
+            return data
+        if data.get("value") is None:
+            return data
+
+        normalized = dict(data)
+        normalized["value"] = cls._build_value_model(cls._normalize_checkbox_value(data["value"]))
+        return normalized
+
+    @model_validator(mode="after")
+    def normalize_checkbox_value(self) -> Self:
+        field_type = getattr(self.type, "value", self.type)
+        if field_type == "checkbox" and self.value is not None:
+            self.value.actual_instance = self._normalize_checkbox_value(self.value)
+        return self
+
+    @classmethod
+    def _build_value_model(cls, value: str) -> Any:
+        value_field = cls.model_fields.get("value")
+        if value_field is None:
+            return value
+
+        annotation = value_field.annotation
+        candidates = get_args(annotation) or (annotation,)
+        for candidate in candidates:
+            if candidate is type(None):
+                continue
+            value_model: Any = candidate
+            if callable(value_model):
+                return value_model(value)
+        return value
+
+    @staticmethod
+    def _field_type_value(value: Any) -> Any:
+        return getattr(value, "value", value)
+
+    @staticmethod
+    def _normalize_checkbox_value(value: Any) -> str:
+        actual_value = getattr(value, "actual_instance", value)
+        if isinstance(actual_value, bool):
+            return "t" if actual_value else "f"
+        if isinstance(actual_value, str):
+            normalized = actual_value.strip().lower()
+            if normalized in {"true", "t"}:
+                return "t"
+            if normalized in {"false", "f"}:
+                return "f"
+        raise ValueError('Checkbox field values must be boolean or one of "true", "false", "t", or "f"')
 
     model_config = ConfigDict(
         populate_by_name=True,
