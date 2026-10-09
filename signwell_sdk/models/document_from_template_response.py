@@ -16,9 +16,11 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
 from signwell_sdk.models.checkbox_group_info import CheckboxGroupInfo
+from signwell_sdk.models.conditional_logic_decision_info import ConditionalLogicDecisionInfo
+from signwell_sdk.models.conditional_rule_info import ConditionalRuleInfo
 from signwell_sdk.models.copied_contact_info import CopiedContactInfo
 from signwell_sdk.models.document_from_template_response_fields_inner_inner import (
     DocumentFromTemplateResponseFieldsInnerInner,
@@ -27,6 +29,7 @@ from signwell_sdk.models.document_from_template_response_recipients_inner import
     DocumentFromTemplateResponseRecipientsInner,
 )
 from signwell_sdk.models.document_response_attachment_requests_inner import DocumentResponseAttachmentRequestsInner
+from signwell_sdk.models.embedded_branding import EmbeddedBranding
 from signwell_sdk.models.file_info import FileInfo
 from signwell_sdk.models.label_info import LabelInfo
 from typing import Any, Optional, Set
@@ -38,6 +41,14 @@ class DocumentFromTemplateResponse(BaseModel):
     DocumentFromTemplateResponse
     """  # noqa: E501
 
+    cfr_part11: StrictBool | None = Field(
+        default=None,
+        description="Whether 21 CFR Part 11 controls apply to this document. Read-only: the value is taken from the workspace setting when the document is created and never changes afterwards.",
+    )
+    cfr_part11_signing_mode: StrictStr | None = Field(
+        default=None,
+        description="The signing mode of a 21 CFR Part 11 document: streamlined (one final authentication) or per_signature (authentication at every signature and initials field). Null when Part 11 does not apply.",
+    )
     test_mode: StrictBool
     id: StrictStr
     template_id: StrictStr | None = None
@@ -59,6 +70,7 @@ class DocumentFromTemplateResponse(BaseModel):
     )
     reminders: StrictBool | None = None
     archived: StrictBool | None = None
+    embedded: EmbeddedBranding | None = None
     embedded_signing: StrictBool | None = None
     embedded_edit_url: StrictStr | None = None
     embedded_preview_url: StrictStr | None = None
@@ -78,8 +90,12 @@ class DocumentFromTemplateResponse(BaseModel):
     allow_reassign: StrictBool | None = None
     labels: List[LabelInfo] | None = None
     checkbox_groups: List[CheckboxGroupInfo] | None = None
+    conditional_rules: List[ConditionalRuleInfo] | None = None
+    conditional_logic_decisions: List[ConditionalLogicDecisionInfo] | None = None
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = [
+        "cfr_part11",
+        "cfr_part11_signing_mode",
         "test_mode",
         "id",
         "template_id",
@@ -98,6 +114,7 @@ class DocumentFromTemplateResponse(BaseModel):
         "status",
         "reminders",
         "archived",
+        "embedded",
         "embedded_signing",
         "embedded_edit_url",
         "embedded_preview_url",
@@ -117,7 +134,19 @@ class DocumentFromTemplateResponse(BaseModel):
         "allow_reassign",
         "labels",
         "checkbox_groups",
+        "conditional_rules",
+        "conditional_logic_decisions",
     ]
+
+    @field_validator("cfr_part11_signing_mode")
+    def cfr_part11_signing_mode_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(["streamlined", "per_signature"]):
+            raise ValueError("must be one of enum values ('streamlined', 'per_signature')")
+        return value
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -168,6 +197,9 @@ class DocumentFromTemplateResponse(BaseModel):
                 if _item_recipients:
                     _items_recipients.append(_item_recipients.to_dict())
             _dict["recipients"] = _items_recipients
+        # override the default output from pydantic by calling `to_dict()` of embedded
+        if self.embedded:
+            _dict["embedded"] = self.embedded.to_dict()
         # override the default output from pydantic by calling `to_dict()` of each item in attachment_requests (list)
         _items_attachment_requests: list[Any] = []
         if self.attachment_requests:
@@ -212,10 +244,29 @@ class DocumentFromTemplateResponse(BaseModel):
                 if _item_checkbox_groups:
                     _items_checkbox_groups.append(_item_checkbox_groups.to_dict())
             _dict["checkbox_groups"] = _items_checkbox_groups
+        # override the default output from pydantic by calling `to_dict()` of each item in conditional_rules (list)
+        _items_conditional_rules: list[Any] = []
+        if self.conditional_rules:
+            for _item_conditional_rules in self.conditional_rules:
+                if _item_conditional_rules:
+                    _items_conditional_rules.append(_item_conditional_rules.to_dict())
+            _dict["conditional_rules"] = _items_conditional_rules
+        # override the default output from pydantic by calling `to_dict()` of each item in conditional_logic_decisions (list)
+        _items_conditional_logic_decisions: list[Any] = []
+        if self.conditional_logic_decisions:
+            for _item_conditional_logic_decisions in self.conditional_logic_decisions:
+                if _item_conditional_logic_decisions:
+                    _items_conditional_logic_decisions.append(_item_conditional_logic_decisions.to_dict())
+            _dict["conditional_logic_decisions"] = _items_conditional_logic_decisions
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
                 _dict[_key] = _value
+
+        # set to None if cfr_part11_signing_mode (nullable) is None
+        # and model_fields_set contains the field
+        if self.cfr_part11_signing_mode is None and "cfr_part11_signing_mode" in self.model_fields_set:
+            _dict["cfr_part11_signing_mode"] = None
 
         # set to None if api_application_id (nullable) is None
         # and model_fields_set contains the field
@@ -236,6 +287,11 @@ class DocumentFromTemplateResponse(BaseModel):
         # and model_fields_set contains the field
         if self.metadata is None and "metadata" in self.model_fields_set:
             _dict["metadata"] = None
+
+        # set to None if embedded (nullable) is None
+        # and model_fields_set contains the field
+        if self.embedded is None and "embedded" in self.model_fields_set:
+            _dict["embedded"] = None
 
         # set to None if embedded_preview_url (nullable) is None
         # and model_fields_set contains the field
@@ -285,6 +341,8 @@ class DocumentFromTemplateResponse(BaseModel):
 
         _obj = cls.model_validate(
             {
+                "cfr_part11": obj.get("cfr_part11"),
+                "cfr_part11_signing_mode": obj.get("cfr_part11_signing_mode"),
                 "test_mode": obj.get("test_mode"),
                 "id": obj.get("id"),
                 "template_id": obj.get("template_id"),
@@ -307,6 +365,7 @@ class DocumentFromTemplateResponse(BaseModel):
                 "status": obj.get("status"),
                 "reminders": obj.get("reminders"),
                 "archived": obj.get("archived"),
+                "embedded": EmbeddedBranding.from_dict(obj["embedded"]) if obj.get("embedded") is not None else None,
                 "embedded_signing": obj.get("embedded_signing"),
                 "embedded_edit_url": obj.get("embedded_edit_url"),
                 "embedded_preview_url": obj.get("embedded_preview_url"),
@@ -342,6 +401,14 @@ class DocumentFromTemplateResponse(BaseModel):
                 else None,
                 "checkbox_groups": [CheckboxGroupInfo.from_dict(_item) for _item in obj["checkbox_groups"]]
                 if obj.get("checkbox_groups") is not None
+                else None,
+                "conditional_rules": [ConditionalRuleInfo.from_dict(_item) for _item in obj["conditional_rules"]]
+                if obj.get("conditional_rules") is not None
+                else None,
+                "conditional_logic_decisions": [
+                    ConditionalLogicDecisionInfo.from_dict(_item) for _item in obj["conditional_logic_decisions"]
+                ]
+                if obj.get("conditional_logic_decisions") is not None
                 else None,
             }
         )

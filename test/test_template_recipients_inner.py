@@ -41,15 +41,24 @@ class TestTemplateRecipientsInner(unittest.TestCase):
                 email = 'signer@example.com',
                 placeholder_name = '',
                 passcode = '',
+                passcode_delivery = signwell_sdk.models.recipients_inner_passcode_delivery.Recipients_inner_passcode_delivery(
+                    enabled = True, 
+                    methods = [
+                        'email'
+                        ], 
+                    expire_after_access = True, ),
                 subject = '',
                 message = '',
                 send_email = True,
-                send_email_delay = 56
+                send_email_delay = 56,
+                delivery_method = 'email',
+                phone_number = '+14155551234',
+                send_sms = True,
+                send_sms_delay = 56
             )
         else:
             return TemplateRecipientsInner(
                 id = '',
-                email = 'signer@example.com',
         )
         """
 

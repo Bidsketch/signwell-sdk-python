@@ -20,7 +20,9 @@ from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
 from signwell_sdk.models.attachment_requests_inner import AttachmentRequestsInner
 from signwell_sdk.models.checkbox_groups_inner import CheckboxGroupsInner
+from signwell_sdk.models.conditional_rule_request import ConditionalRuleRequest
 from signwell_sdk.models.copied_contacts_inner import CopiedContactsInner
+from signwell_sdk.models.embedded_request import EmbeddedRequest
 from signwell_sdk.models.fields_inner_inner import FieldsInnerInner
 from signwell_sdk.models.files_inner import FilesInner
 from signwell_sdk.models.label_request import LabelRequest
@@ -38,17 +40,21 @@ class DocumentRequest(BaseModel):
         default=False,
         description="Set to `true` to enable Test Mode. Documents created with Test Mode do not count towards API billing and are not legally binding. Defaults to `false`",
     )
+    send_sms_test_preview_email: StrictBool | None = Field(
+        default=False,
+        description="Only applies when `test_mode` is `true`. When `true`, and the document has an SMS-only recipient, sends the document owner a test-mode preview email (with a masked phone number) instead of the regular SMS sender-copy email. No SMS is sent and no credits are used, in test mode or otherwise. Defaults to `false`.",
+    )
     files: List[FilesInner] = Field(
         description="Document files can be uploaded by specifying a file URL or base64 string. Either `file_url` or `file_base64` must be present (not both). Valid file types are: .pdf, .doc, .docx, .pages, .ppt, .pptx, .key, .xls, .xlsx, .numbers, .jpg, .jpeg, .png, .tiff, .tif, .webp, .html, and .htm"
     )
     name: StrictStr | None = Field(default=None, description="The name of the document.")
     subject: StrictStr | None = Field(
         default=None,
-        description="Email subject for the signature request that recipients will see. Defaults to the default system subject or a template subject (if the document is created from a template).",
+        description="Email subject for the signature request that recipients will see. Defaults to the default system subject or a template subject (if the document is created from a template). Applies to email notifications only; SMS notifications always use fixed system templates.",
     )
     message: StrictStr | None = Field(
         default=None,
-        description="Email message for the signature request that recipients will see. Defaults to the default system message or a template message (if the document is created from a template).",
+        description="Email message for the signature request that recipients will see. Defaults to the default system message or a template message (if the document is created from a template). Applies to email notifications only; SMS notifications always use fixed system templates.",
     )
     recipients: List[RecipientsInner] = Field(
         description="Document recipients are people that must complete and/or sign a document."
@@ -59,7 +65,7 @@ class DocumentRequest(BaseModel):
     )
     self_sign: StrictBool | None = Field(
         default=False,
-        description="When set to true the document will enter self-sign mode, which allows the document creator to sign and complete a document without any field setup. Must use the embedded_edit_url in the response and (if embedding) the embedded requesting workflow.",
+        description="When set to true the document will enter self-sign mode, which allows the document creator to sign and complete a document without any field setup. Must use the embedded_edit_url in the response and (if embedding) the embedded requesting workflow. Unavailable on 21 CFR Part 11 documents, which require every signature to come from an authenticated signer: sending `true` returns a 422.",
     )
     with_signature_page: StrictBool | None = Field(
         default=False,
@@ -89,6 +95,7 @@ class DocumentRequest(BaseModel):
         default=False,
         description="On embedding signing, document owners (and CC'd contacts) do not get a notification email when documents have been completed. Setting this param to `true` will send out those final completed notifications. Default is `false`",
     )
+    embedded: EmbeddedRequest | None = None
     text_tags: StrictBool | None = Field(
         default=False,
         description="An alternative way (if you can’t use the recommended way) of placing fields in specific locations of your document by using special text tags. Useful when changing the content of your files changes the location of fields. See API documentation for “Text Tags” for details. Defaults to false.",
@@ -110,7 +117,7 @@ class DocumentRequest(BaseModel):
     )
     allow_reassign: StrictBool | None = Field(
         default=True,
-        description="In some cases a signer is not the right person to sign and may need to reassign their signing responsibilities to another person. This feature allows them to reassign the document to someone else.",
+        description="In some cases a signer is not the right person to sign and may need to reassign their signing responsibilities to another person. This feature allows them to reassign the document to someone else. Unavailable on 21 CFR Part 11 documents: omit it and reassignment stays off, while sending `true` returns a 422.",
     )
     decline_redirect_url: StrictStr | None = Field(
         default=None, description="A URL that recipients are redirected to if the document is declined."
@@ -118,6 +125,10 @@ class DocumentRequest(BaseModel):
     language: StrictStr | None = Field(
         default=None,
         description="Sets the language for all recipients on the document and updates all recipient side interactions including the document email and the document itself. Accepted languages: English, Français, Español, Deutsch, Polski, Português, Dansk, Nederlands, Italiano, Русский, Svenska, العربية, Ελληνικά, Türkçe, Slovenčina. Defaults to English. Language should be sent in ISO 639-1 format: en, fr, es, de, pl, pt, da, nl, it, ru, sv, ar, el, tr, sk.",
+    )
+    conditional_rules: List[ConditionalRuleRequest] | None = Field(
+        default=None,
+        description="Conditional logic rules that show, hide, or require fields based on what a signer does to other fields. Every identifier is a field api_id. At most 10 rules per document or template.",
     )
     metadata: Dict[str, StrictStr] | None = Field(
         default=None,
@@ -146,6 +157,7 @@ class DocumentRequest(BaseModel):
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = [
         "test_mode",
+        "send_sms_test_preview_email",
         "files",
         "name",
         "subject",
@@ -160,6 +172,7 @@ class DocumentRequest(BaseModel):
         "api_application_id",
         "embedded_signing",
         "embedded_signing_notifications",
+        "embedded",
         "text_tags",
         "custom_requester_name",
         "custom_requester_email",
@@ -168,6 +181,7 @@ class DocumentRequest(BaseModel):
         "allow_reassign",
         "decline_redirect_url",
         "language",
+        "conditional_rules",
         "metadata",
         "fields",
         "attachment_requests",
@@ -232,6 +246,16 @@ class DocumentRequest(BaseModel):
                 if _item_recipients:
                     _items_recipients.append(_item_recipients.to_dict())
             _dict["recipients"] = _items_recipients
+        # override the default output from pydantic by calling `to_dict()` of embedded
+        if self.embedded:
+            _dict["embedded"] = self.embedded.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in conditional_rules (list)
+        _items_conditional_rules: list[Any] = []
+        if self.conditional_rules:
+            for _item_conditional_rules in self.conditional_rules:
+                if _item_conditional_rules:
+                    _items_conditional_rules.append(_item_conditional_rules.to_dict())
+            _dict["conditional_rules"] = _items_conditional_rules
         # override the default output from pydantic by calling `to_dict()` of each item in fields (list of list)
         _items_fields: list[Any] = []
         if self.fields:
@@ -288,6 +312,9 @@ class DocumentRequest(BaseModel):
         _obj = cls.model_validate(
             {
                 "test_mode": obj.get("test_mode") if obj.get("test_mode") is not None else False,
+                "send_sms_test_preview_email": obj.get("send_sms_test_preview_email")
+                if obj.get("send_sms_test_preview_email") is not None
+                else False,
                 "files": [FilesInner.from_dict(_item) for _item in obj["files"]]
                 if obj.get("files") is not None
                 else None,
@@ -312,6 +339,7 @@ class DocumentRequest(BaseModel):
                 "embedded_signing_notifications": obj.get("embedded_signing_notifications")
                 if obj.get("embedded_signing_notifications") is not None
                 else False,
+                "embedded": EmbeddedRequest.from_dict(obj["embedded"]) if obj.get("embedded") is not None else None,
                 "text_tags": obj.get("text_tags") if obj.get("text_tags") is not None else False,
                 "custom_requester_name": obj.get("custom_requester_name"),
                 "custom_requester_email": obj.get("custom_requester_email"),
@@ -320,6 +348,9 @@ class DocumentRequest(BaseModel):
                 "allow_reassign": obj.get("allow_reassign") if obj.get("allow_reassign") is not None else True,
                 "decline_redirect_url": obj.get("decline_redirect_url"),
                 "language": obj.get("language"),
+                "conditional_rules": [ConditionalRuleRequest.from_dict(_item) for _item in obj["conditional_rules"]]
+                if obj.get("conditional_rules") is not None
+                else None,
                 "metadata": obj.get("metadata"),
                 "fields": [
                     [FieldsInnerInner.from_dict(_inner_item) for _inner_item in _item] for _item in obj["fields"]

@@ -35,6 +35,7 @@ class TextValidation(str, Enum):
     ALPHANUMERIC = "alphanumeric"
     US_BANK_ROUTING_NUMBER = "us_bank_routing_number"
     US_BANK_ACCOUNT_NUMBER = "us_bank_account_number"
+    CUSTOM = "custom"
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

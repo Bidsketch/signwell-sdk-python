@@ -25,6 +25,7 @@ from signwell_sdk.models.document_request import DocumentRequest
 from signwell_sdk.models.document_response import DocumentResponse
 from signwell_sdk.models.file_format import FileFormat
 from signwell_sdk.models.send_reminder_request import SendReminderRequest
+from signwell_sdk.models.update_authentication_request import UpdateAuthenticationRequest
 from signwell_sdk.models.update_document_and_send_request import UpdateDocumentAndSendRequest
 from signwell_sdk.models.update_recipients_request import UpdateRecipientsRequest
 from signwell_sdk.models.completed_pdf_url_response import CompletedPdfUrlResponse
@@ -69,7 +70,7 @@ class DocumentApi:
     ) -> DocumentResponse:
         """Create Document
 
-        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent.
+        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent. Recipients are notified by email, SMS, or both based on each recipient's `delivery_method`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled, and requires a `phone_number` in E.164 format.
 
         :param document_request: (required)
         :type document_request: DocumentRequest
@@ -109,7 +110,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -133,7 +133,7 @@ class DocumentApi:
     ) -> ApiResponse[DocumentResponse]:
         """Create Document
 
-        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent.
+        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent. Recipients are notified by email, SMS, or both based on each recipient's `delivery_method`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled, and requires a `phone_number` in E.164 format.
 
         :param document_request: (required)
         :type document_request: DocumentRequest
@@ -173,7 +173,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -197,7 +196,7 @@ class DocumentApi:
     ) -> RESTResponseType:
         """Create Document
 
-        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent.
+        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent. Recipients are notified by email, SMS, or both based on each recipient's `delivery_method`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled, and requires a `phone_number` in E.164 format.
 
         :param document_request: (required)
         :type document_request: DocumentRequest
@@ -237,7 +236,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -315,7 +313,7 @@ class DocumentApi:
     ) -> DocumentFromTemplateResponse:
         """Create Document from Template
 
-        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent.
+        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent. Pre-signed template signatures and initials are copied to the new document as document content — they remain visible on the document but do not generate a signing event, do not emit a `document_signed` webhook, and the recipient's status will not reflect them as a real signing action. If the template was pre-signed for a signer and the request adds new unsigned signature/initials fields for that same signer, the pre-applied ratifications are cleared silently so the signer is asked to sign once. Recipients are notified by email, SMS, or both based on each recipient's `delivery_method`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled, and requires a `phone_number` in E.164 format.
 
         :param document_from_template_request: (required)
         :type document_from_template_request: DocumentFromTemplateRequest
@@ -355,7 +353,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -379,7 +376,7 @@ class DocumentApi:
     ) -> ApiResponse[DocumentFromTemplateResponse]:
         """Create Document from Template
 
-        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent.
+        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent. Pre-signed template signatures and initials are copied to the new document as document content — they remain visible on the document but do not generate a signing event, do not emit a `document_signed` webhook, and the recipient's status will not reflect them as a real signing action. If the template was pre-signed for a signer and the request adds new unsigned signature/initials fields for that same signer, the pre-applied ratifications are cleared silently so the signer is asked to sign once. Recipients are notified by email, SMS, or both based on each recipient's `delivery_method`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled, and requires a `phone_number` in E.164 format.
 
         :param document_from_template_request: (required)
         :type document_from_template_request: DocumentFromTemplateRequest
@@ -419,7 +416,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -443,7 +439,7 @@ class DocumentApi:
     ) -> RESTResponseType:
         """Create Document from Template
 
-        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent.
+        Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent. Pre-signed template signatures and initials are copied to the new document as document content — they remain visible on the document but do not generate a signing event, do not emit a `document_signed` webhook, and the recipient's status will not reflect them as a real signing action. If the template was pre-signed for a signer and the request adds new unsigned signature/initials fields for that same signer, the pre-applied ratifications are cleared silently so the signer is asked to sign once. Recipients are notified by email, SMS, or both based on each recipient's `delivery_method`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled, and requires a `phone_number` in E.164 format.
 
         :param document_from_template_request: (required)
         :type document_from_template_request: DocumentFromTemplateRequest
@@ -483,7 +479,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -596,7 +591,6 @@ class DocumentApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -655,7 +649,6 @@ class DocumentApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -714,7 +707,6 @@ class DocumentApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -840,7 +832,6 @@ class DocumentApi:
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -920,7 +911,6 @@ class DocumentApi:
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1000,7 +990,6 @@ class DocumentApi:
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -1085,7 +1074,7 @@ class DocumentApi:
     ) -> DocumentResponse:
         """Get Document
 
-        Returns a document and all associated document data. Supply the unique document ID from either a document creation request or Document page URL.
+        Returns a document and all associated document data. Supply the unique document ID from either a document creation request or Document page URL. Each recipient includes its `delivery_method`, and recipients whose delivery includes SMS also include an `sms` object with the masked phone number and SMS delivery status.
 
         :param id: (required)
         :type id: str
@@ -1120,7 +1109,6 @@ class DocumentApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1144,7 +1132,7 @@ class DocumentApi:
     ) -> ApiResponse[DocumentResponse]:
         """Get Document
 
-        Returns a document and all associated document data. Supply the unique document ID from either a document creation request or Document page URL.
+        Returns a document and all associated document data. Supply the unique document ID from either a document creation request or Document page URL. Each recipient includes its `delivery_method`, and recipients whose delivery includes SMS also include an `sms` object with the masked phone number and SMS delivery status.
 
         :param id: (required)
         :type id: str
@@ -1179,7 +1167,6 @@ class DocumentApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1203,7 +1190,7 @@ class DocumentApi:
     ) -> RESTResponseType:
         """Get Document
 
-        Returns a document and all associated document data. Supply the unique document ID from either a document creation request or Document page URL.
+        Returns a document and all associated document data. Supply the unique document ID from either a document creation request or Document page URL. Each recipient includes its `delivery_method`, and recipients whose delivery includes SMS also include an `sms` object with the masked phone number and SMS delivery status.
 
         :param id: (required)
         :type id: str
@@ -1238,7 +1225,6 @@ class DocumentApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -1360,7 +1346,6 @@ class DocumentApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1436,7 +1421,6 @@ class DocumentApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1512,7 +1496,6 @@ class DocumentApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -1592,7 +1575,7 @@ class DocumentApi:
     ) -> DocumentResponse:
         """Update and Send Document
 
-        Updates a draft document and sends it to be signed by recipients.
+        Updates a draft document and sends it to be signed by recipients. `subject` and `message` apply to email notifications only; SMS notifications always use fixed system templates.
 
         :param id: (required)
         :type id: str
@@ -1634,7 +1617,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1659,7 +1641,7 @@ class DocumentApi:
     ) -> ApiResponse[DocumentResponse]:
         """Update and Send Document
 
-        Updates a draft document and sends it to be signed by recipients.
+        Updates a draft document and sends it to be signed by recipients. `subject` and `message` apply to email notifications only; SMS notifications always use fixed system templates.
 
         :param id: (required)
         :type id: str
@@ -1701,7 +1683,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1726,7 +1707,7 @@ class DocumentApi:
     ) -> RESTResponseType:
         """Update and Send Document
 
-        Updates a draft document and sends it to be signed by recipients.
+        Updates a draft document and sends it to be signed by recipients. `subject` and `message` apply to email notifications only; SMS notifications always use fixed system templates.
 
         :param id: (required)
         :type id: str
@@ -1768,7 +1749,6 @@ class DocumentApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -1850,7 +1830,7 @@ class DocumentApi:
     ) -> None:
         """Send Reminder
 
-        Sends a reminder email to recipients that have not signed yet.
+        Sends a reminder to recipients who have not signed yet. Each recipient is reminded through their delivery method (email, SMS, or both). SMS reminders are only sent to recipients whose delivery method includes SMS, and only when the workspace is eligible for SMS and has it enabled.
 
         :param id: (required)
         :type id: str
@@ -1889,11 +1869,10 @@ class DocumentApi:
 
         _response_types_map: Dict[str, str | None] = {
             "201": None,
-            "422": "ValidationErrorResponse",
             "404": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1918,7 +1897,7 @@ class DocumentApi:
     ) -> ApiResponse[None]:
         """Send Reminder
 
-        Sends a reminder email to recipients that have not signed yet.
+        Sends a reminder to recipients who have not signed yet. Each recipient is reminded through their delivery method (email, SMS, or both). SMS reminders are only sent to recipients whose delivery method includes SMS, and only when the workspace is eligible for SMS and has it enabled.
 
         :param id: (required)
         :type id: str
@@ -1957,11 +1936,10 @@ class DocumentApi:
 
         _response_types_map: Dict[str, str | None] = {
             "201": None,
-            "422": "ValidationErrorResponse",
             "404": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1986,7 +1964,7 @@ class DocumentApi:
     ) -> RESTResponseType:
         """Send Reminder
 
-        Sends a reminder email to recipients that have not signed yet.
+        Sends a reminder to recipients who have not signed yet. Each recipient is reminded through their delivery method (email, SMS, or both). SMS reminders are only sent to recipients whose delivery method includes SMS, and only when the workspace is eligible for SMS and has it enabled.
 
         :param id: (required)
         :type id: str
@@ -2025,11 +2003,10 @@ class DocumentApi:
 
         _response_types_map: Dict[str, str | None] = {
             "201": None,
-            "422": "ValidationErrorResponse",
             "404": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -2095,6 +2072,267 @@ class DocumentApi:
         )
 
     @validate_call
+    def update_authentication(
+        self,
+        id: Annotated[str, Field(min_length=1, strict=True)],
+        update_authentication_request: UpdateAuthenticationRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Dict[StrictStr, Any] | None = None,
+        _content_type: StrictStr | None = None,
+        _headers: Dict[StrictStr, Any] | None = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> DocumentResponse:
+        """Update Authentication
+
+        Update passcode delivery settings for recipients on a sent document. Only recipients who have not started signing can be updated.
+
+        :param id: (required)
+        :type id: str
+        :param update_authentication_request: (required)
+        :type update_authentication_request: UpdateAuthenticationRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._update_authentication_serialize(
+            id=id,
+            update_authentication_request=update_authentication_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, str | None] = {
+            "200": "DocumentResponse",
+            "400": None,
+            "404": None,
+            "422": None,
+            "429": "RateLimitErrorResponse",
+        }
+        response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+    @validate_call
+    def update_authentication_with_http_info(
+        self,
+        id: Annotated[str, Field(min_length=1, strict=True)],
+        update_authentication_request: UpdateAuthenticationRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Dict[StrictStr, Any] | None = None,
+        _content_type: StrictStr | None = None,
+        _headers: Dict[StrictStr, Any] | None = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[DocumentResponse]:
+        """Update Authentication
+
+        Update passcode delivery settings for recipients on a sent document. Only recipients who have not started signing can be updated.
+
+        :param id: (required)
+        :type id: str
+        :param update_authentication_request: (required)
+        :type update_authentication_request: UpdateAuthenticationRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._update_authentication_serialize(
+            id=id,
+            update_authentication_request=update_authentication_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, str | None] = {
+            "200": "DocumentResponse",
+            "400": None,
+            "404": None,
+            "422": None,
+            "429": "RateLimitErrorResponse",
+        }
+        response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+    @validate_call
+    def update_authentication_without_preload_content(
+        self,
+        id: Annotated[str, Field(min_length=1, strict=True)],
+        update_authentication_request: UpdateAuthenticationRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Dict[StrictStr, Any] | None = None,
+        _content_type: StrictStr | None = None,
+        _headers: Dict[StrictStr, Any] | None = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Update Authentication
+
+        Update passcode delivery settings for recipients on a sent document. Only recipients who have not started signing can be updated.
+
+        :param id: (required)
+        :type id: str
+        :param update_authentication_request: (required)
+        :type update_authentication_request: UpdateAuthenticationRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._update_authentication_serialize(
+            id=id,
+            update_authentication_request=update_authentication_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, str | None] = {
+            "200": "DocumentResponse",
+            "400": None,
+            "404": None,
+            "422": None,
+            "429": "RateLimitErrorResponse",
+        }
+        response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        return response_data.response
+
+    def _update_authentication_serialize(
+        self,
+        id,
+        update_authentication_request,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {}
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, str | None] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]] = {}
+        _body_params: bytes | None = None
+
+        # process the path parameters
+        if id is not None:
+            _path_params["id"] = id
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if update_authentication_request is not None:
+            _body_params = update_authentication_request
+
+        # set the HTTP header `Accept`
+        if "Accept" not in _header_params:
+            _header_params["Accept"] = self.api_client.select_header_accept(["application/json"])
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params["Content-Type"] = _content_type
+        else:
+            _default_content_type = self.api_client.select_header_content_type(["application/json"])
+            if _default_content_type is not None:
+                _header_params["Content-Type"] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = ["api_key"]
+
+        return self.api_client.param_serialize(
+            method="PATCH",
+            resource_path="/api/v1/documents/{id}/authentication",
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth,
+        )
+
+    @validate_call
     def update_recipients(
         self,
         id: Annotated[str, Field(min_length=1, strict=True)],
@@ -2111,7 +2349,7 @@ class DocumentApi:
     ) -> DocumentResponse:
         """Update Recipients
 
-        Updates one or more recipients on a document that has already been sent. Only recipients who have not started signing may be updated. Recipient IDs must be retrieved from the Get Document response. Allowed document statuses: sent, viewed, pending, bounced. For non-embedded documents, updated recipients will receive a new notification email. For embedded signing documents, email behavior follows each recipient's send_email setting.
+        Updates one or more recipients on a document that has already been sent. Only recipients who have not started signing may be updated. Recipient IDs must be retrieved from the Get Document response. Allowed document statuses: sent, viewed, pending, bounced. For non-embedded documents, updated recipients will receive a new notification email. For embedded signing documents, email behavior follows each recipient's send_email setting. This endpoint does not support changing a recipient's `delivery_method` or `phone_number`; SMS delivery settings are set when the document is created.
 
         :param id: (required)
         :type id: str
@@ -2150,13 +2388,12 @@ class DocumentApi:
 
         _response_types_map: Dict[str, str | None] = {
             "200": "DocumentResponse",
-            "409": None,
             "400": None,
-            "422": None,
             "404": None,
+            "409": None,
+            "422": None,
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -2181,7 +2418,7 @@ class DocumentApi:
     ) -> ApiResponse[DocumentResponse]:
         """Update Recipients
 
-        Updates one or more recipients on a document that has already been sent. Only recipients who have not started signing may be updated. Recipient IDs must be retrieved from the Get Document response. Allowed document statuses: sent, viewed, pending, bounced. For non-embedded documents, updated recipients will receive a new notification email. For embedded signing documents, email behavior follows each recipient's send_email setting.
+        Updates one or more recipients on a document that has already been sent. Only recipients who have not started signing may be updated. Recipient IDs must be retrieved from the Get Document response. Allowed document statuses: sent, viewed, pending, bounced. For non-embedded documents, updated recipients will receive a new notification email. For embedded signing documents, email behavior follows each recipient's send_email setting. This endpoint does not support changing a recipient's `delivery_method` or `phone_number`; SMS delivery settings are set when the document is created.
 
         :param id: (required)
         :type id: str
@@ -2220,13 +2457,12 @@ class DocumentApi:
 
         _response_types_map: Dict[str, str | None] = {
             "200": "DocumentResponse",
-            "409": None,
             "400": None,
-            "422": None,
             "404": None,
+            "409": None,
+            "422": None,
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -2251,7 +2487,7 @@ class DocumentApi:
     ) -> RESTResponseType:
         """Update Recipients
 
-        Updates one or more recipients on a document that has already been sent. Only recipients who have not started signing may be updated. Recipient IDs must be retrieved from the Get Document response. Allowed document statuses: sent, viewed, pending, bounced. For non-embedded documents, updated recipients will receive a new notification email. For embedded signing documents, email behavior follows each recipient's send_email setting.
+        Updates one or more recipients on a document that has already been sent. Only recipients who have not started signing may be updated. Recipient IDs must be retrieved from the Get Document response. Allowed document statuses: sent, viewed, pending, bounced. For non-embedded documents, updated recipients will receive a new notification email. For embedded signing documents, email behavior follows each recipient's send_email setting. This endpoint does not support changing a recipient's `delivery_method` or `phone_number`; SMS delivery settings are set when the document is created.
 
         :param id: (required)
         :type id: str
@@ -2290,13 +2526,12 @@ class DocumentApi:
 
         _response_types_map: Dict[str, str | None] = {
             "200": "DocumentResponse",
-            "409": None,
             "400": None,
-            "422": None,
             "404": None,
+            "409": None,
+            "422": None,
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 

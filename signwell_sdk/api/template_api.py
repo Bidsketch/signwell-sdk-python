@@ -94,7 +94,6 @@ class TemplateApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -158,7 +157,6 @@ class TemplateApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -222,7 +220,6 @@ class TemplateApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -335,7 +332,6 @@ class TemplateApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -394,7 +390,6 @@ class TemplateApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -453,7 +448,6 @@ class TemplateApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -558,7 +552,6 @@ class TemplateApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -617,7 +610,6 @@ class TemplateApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -676,7 +668,6 @@ class TemplateApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -798,7 +789,6 @@ class TemplateApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -874,7 +864,6 @@ class TemplateApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -950,7 +939,6 @@ class TemplateApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -1073,7 +1061,6 @@ class TemplateApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1141,7 +1128,6 @@ class TemplateApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1209,7 +1195,6 @@ class TemplateApi:
             "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 

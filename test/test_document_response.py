@@ -36,6 +36,8 @@ class TestDocumentResponse(unittest.TestCase):
         model = DocumentResponse()
         if include_optional:
             return DocumentResponse(
+                cfr_part11 = True,
+                cfr_part11_signing_mode = 'streamlined',
                 test_mode = True,
                 id = '',
                 api_application_id = '',
@@ -60,6 +62,15 @@ class TestDocumentResponse(unittest.TestCase):
                         subject = '', 
                         send_email = True, 
                         send_email_delay = 56, 
+                        delivery_method = 'email', 
+                        sms = signwell_sdk.models.document_response_recipients_inner_sms.DocumentResponse_recipients_inner_sms(
+                            phone_number_masked = '', 
+                            send_sms = True, 
+                            send_sms_delay = 56, 
+                            delivery_status = '', 
+                            message_type = '', 
+                            failed = True, 
+                            failed_details = '', ), 
                         signing_order = 56, 
                         signing_url = '', 
                         embedded_signing_url = '', 
@@ -72,11 +83,24 @@ class TestDocumentResponse(unittest.TestCase):
                                 required = True, )
                             ], 
                         passcode = '', 
+                        passcode_delivery = signwell_sdk.models.document_response_recipients_inner_passcode_delivery.DocumentResponse_recipients_inner_passcode_delivery(
+                            enabled = True, 
+                            methods = [
+                                ''
+                                ], 
+                            expire_after_access = True, ), 
                         status = '', )
                     ],
                 status = '',
                 reminders = True,
                 archived = True,
+                embedded = signwell_sdk.models.embedded_branding.EmbeddedBranding(
+                    branding = signwell_sdk.models.embedded_branding_branding.EmbeddedBranding_branding(
+                        company_logo = 'provided', 
+                        accent_color = '', 
+                        button_label_color = '', 
+                        link_color = '', 
+                        button_border_radius = 56, ), ),
                 embedded_signing = True,
                 embedded_edit_url = '',
                 embedded_preview_url = '',
@@ -128,6 +152,8 @@ class TestDocumentResponse(unittest.TestCase):
                             required = True, 
                             type = 'initials', 
                             validation = 'no_text_validation', 
+                            validation_regex = '', 
+                            validation_regex_error_message = '', 
                             value = null, 
                             height = '', 
                             width = '', 
@@ -164,6 +190,33 @@ class TestDocumentResponse(unittest.TestCase):
                         min_value = 56, 
                         max_value = 56, 
                         exact_value = 56, )
+                    ],
+                conditional_rules = [
+                    signwell_sdk.models.conditional_rule_info.ConditionalRuleInfo(
+                        id = '', 
+                        target_id = '', 
+                        action_type = 'show', 
+                        action_field_ids = [
+                            ''
+                            ], 
+                        conditions = [
+                            signwell_sdk.models.conditional_rule_info_conditions_inner.ConditionalRuleInfo_conditions_inner(
+                                condition_type = 'any_of', 
+                                status = 'completed', 
+                                join_operator = 'and_operator', 
+                                field_api_ids = [
+                                    ''
+                                    ], 
+                                position = 56, )
+                            ], )
+                    ],
+                conditional_logic_decisions = [
+                    signwell_sdk.models.conditional_logic_decision_info.ConditionalLogicDecisionInfo(
+                        rule_id = '', 
+                        field_api_id = '', 
+                        decision_type = 'kept_signature', 
+                        decided_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
+                        description = '', )
                     ]
             )
         else:

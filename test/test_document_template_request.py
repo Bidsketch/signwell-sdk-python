@@ -50,7 +50,13 @@ class TestDocumentTemplateRequest(unittest.TestCase):
                         id = '', 
                         name = '', 
                         preassigned_recipient_name = '', 
-                        preassigned_recipient_email = '', )
+                        preassigned_recipient_email = '', 
+                        passcode_delivery = signwell_sdk.models.placeholders_inner_passcode_delivery.Placeholders_inner_passcode_delivery(
+                            enabled = True, 
+                            methods = [
+                                'email'
+                                ], 
+                            expire_after_access = True, ), )
                     ],
                 copied_placeholders = [
                     signwell_sdk.models.copied_placeholders_inner.CopiedPlaceholders_inner(
@@ -69,6 +75,26 @@ class TestDocumentTemplateRequest(unittest.TestCase):
                 allow_reassign = True,
                 decline_redirect_url = '',
                 language = '',
+                conditional_rules = [
+                    signwell_sdk.models.conditional_rule_request.ConditionalRuleRequest(
+                        id = '', 
+                        deleted = True, 
+                        target_id = '', 
+                        action_type = 'show', 
+                        action_field_ids = [
+                            ''
+                            ], 
+                        conditions = [
+                            signwell_sdk.models.conditional_rule_request_conditions_inner.ConditionalRuleRequest_conditions_inner(
+                                condition_type = 'any_of', 
+                                status = 'completed', 
+                                join_operator = 'and_operator', 
+                                field_api_ids = [
+                                    ''
+                                    ], 
+                                position = 56, )
+                            ], )
+                    ],
                 metadata = {
                     'key' : ''
                     },
@@ -86,6 +112,8 @@ class TestDocumentTemplateRequest(unittest.TestCase):
                             api_id = '', 
                             name = '', 
                             validation = 'no_text_validation', 
+                            validation_regex = '', 
+                            validation_regex_error_message = '', 
                             fixed_width = True, 
                             lock_sign_date = True, 
                             date_format = 'MM/DD/YYYY', 
@@ -135,7 +163,13 @@ class TestDocumentTemplateRequest(unittest.TestCase):
                         id = '', 
                         name = '', 
                         preassigned_recipient_name = '', 
-                        preassigned_recipient_email = '', )
+                        preassigned_recipient_email = '', 
+                        passcode_delivery = signwell_sdk.models.placeholders_inner_passcode_delivery.Placeholders_inner_passcode_delivery(
+                            enabled = True, 
+                            methods = [
+                                'email'
+                                ], 
+                            expire_after_access = True, ), )
                     ],
         )
         """

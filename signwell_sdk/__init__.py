@@ -16,7 +16,7 @@ Do not edit the class manually.
 
 from types import SimpleNamespace
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 # import apis into sdk package
 from signwell_sdk.api.api_application_api import ApiApplicationApi
@@ -80,6 +80,11 @@ from signwell_sdk.models.checkbox_groups_inner import CheckboxGroupsInner
 from signwell_sdk.models.checkbox_validation import CheckboxValidation
 from signwell_sdk.models.completed_pdf_response import CompletedPdfResponse
 from signwell_sdk.models.completed_pdf_url_response import CompletedPdfUrlResponse
+from signwell_sdk.models.conditional_logic_decision_info import ConditionalLogicDecisionInfo
+from signwell_sdk.models.conditional_rule_info import ConditionalRuleInfo
+from signwell_sdk.models.conditional_rule_info_conditions_inner import ConditionalRuleInfoConditionsInner
+from signwell_sdk.models.conditional_rule_request import ConditionalRuleRequest
+from signwell_sdk.models.conditional_rule_request_conditions_inner import ConditionalRuleRequestConditionsInner
 from signwell_sdk.models.copied_contact_info import CopiedContactInfo
 from signwell_sdk.models.copied_contacts_inner import CopiedContactsInner
 from signwell_sdk.models.copied_placeholders_inner import CopiedPlaceholdersInner
@@ -109,6 +114,10 @@ from signwell_sdk.models.document_response_fields_inner_inner_options_inner impo
 from signwell_sdk.models.document_response_fields_inner_inner_recipient import DocumentResponseFieldsInnerInnerRecipient
 from signwell_sdk.models.document_response_fields_inner_inner_value import DocumentResponseFieldsInnerInnerValue
 from signwell_sdk.models.document_response_recipients_inner import DocumentResponseRecipientsInner
+from signwell_sdk.models.document_response_recipients_inner_passcode_delivery import (
+    DocumentResponseRecipientsInnerPasscodeDelivery,
+)
+from signwell_sdk.models.document_response_recipients_inner_sms import DocumentResponseRecipientsInnerSms
 from signwell_sdk.models.document_template_list_response import DocumentTemplateListResponse
 from signwell_sdk.models.document_template_request import DocumentTemplateRequest
 from signwell_sdk.models.document_template_response import DocumentTemplateResponse
@@ -118,6 +127,11 @@ from signwell_sdk.models.document_template_response_copied_placeholders_inner im
 from signwell_sdk.models.document_template_response_placeholders_inner import DocumentTemplateResponsePlaceholdersInner
 from signwell_sdk.models.document_template_update_request import DocumentTemplateUpdateRequest
 from signwell_sdk.models.dropdown_option import DropdownOption
+from signwell_sdk.models.embedded_branding import EmbeddedBranding
+from signwell_sdk.models.embedded_branding_branding import EmbeddedBrandingBranding
+from signwell_sdk.models.embedded_branding_request import EmbeddedBrandingRequest
+from signwell_sdk.models.embedded_branding_request_company_logo import EmbeddedBrandingRequestCompanyLogo
+from signwell_sdk.models.embedded_request import EmbeddedRequest
 from signwell_sdk.models.error_response import ErrorResponse
 from signwell_sdk.models.error_response_meta import ErrorResponseMeta
 from signwell_sdk.models.field_type import FieldType
@@ -137,8 +151,10 @@ from signwell_sdk.models.nom151_certificate_response_nom151 import Nom151Certifi
 from signwell_sdk.models.nom151_url_response import Nom151UrlResponse
 from signwell_sdk.models.pagination_meta import PaginationMeta
 from signwell_sdk.models.placeholders_inner import PlaceholdersInner
+from signwell_sdk.models.placeholders_inner_passcode_delivery import PlaceholdersInnerPasscodeDelivery
 from signwell_sdk.models.rate_limit_error_response import RateLimitErrorResponse
 from signwell_sdk.models.recipients_inner import RecipientsInner
+from signwell_sdk.models.recipients_inner_passcode_delivery import RecipientsInnerPasscodeDelivery
 from signwell_sdk.models.reminder_recipients_inner import ReminderRecipientsInner
 from signwell_sdk.models.send_reminder_request import SendReminderRequest
 from signwell_sdk.models.template_attachment_requests_inner import TemplateAttachmentRequestsInner
@@ -148,8 +164,13 @@ from signwell_sdk.models.template_field_values_inner_value import TemplateFieldV
 from signwell_sdk.models.template_fields_inner_inner import TemplateFieldsInnerInner
 from signwell_sdk.models.template_recipients_inner import TemplateRecipientsInner
 from signwell_sdk.models.text_validation import TextValidation
+from signwell_sdk.models.update_authentication_request import UpdateAuthenticationRequest
+from signwell_sdk.models.update_authentication_request_recipients_inner import (
+    UpdateAuthenticationRequestRecipientsInner,
+)
 from signwell_sdk.models.update_document_and_send_request import UpdateDocumentAndSendRequest
 from signwell_sdk.models.update_recipients_map_inner import UpdateRecipientsMapInner
+from signwell_sdk.models.update_recipients_map_inner_passcode_delivery import UpdateRecipientsMapInnerPasscodeDelivery
 from signwell_sdk.models.update_recipients_request import UpdateRecipientsRequest
 from signwell_sdk.models.validation_error_response import ValidationErrorResponse
 from signwell_sdk.models.webhook_response import WebhookResponse
@@ -201,6 +222,11 @@ Models = SimpleNamespace(
     CheckboxValidation=CheckboxValidation,
     CompletedPdfResponse=CompletedPdfResponse,
     CompletedPdfUrlResponse=CompletedPdfUrlResponse,
+    ConditionalLogicDecisionInfo=ConditionalLogicDecisionInfo,
+    ConditionalRuleInfo=ConditionalRuleInfo,
+    ConditionalRuleInfoConditionsInner=ConditionalRuleInfoConditionsInner,
+    ConditionalRuleRequest=ConditionalRuleRequest,
+    ConditionalRuleRequestConditionsInner=ConditionalRuleRequestConditionsInner,
     CopiedContactInfo=CopiedContactInfo,
     CopiedContactsInner=CopiedContactsInner,
     CopiedPlaceholdersInner=CopiedPlaceholdersInner,
@@ -222,6 +248,8 @@ Models = SimpleNamespace(
     DocumentResponseFieldsInnerInnerRecipient=DocumentResponseFieldsInnerInnerRecipient,
     DocumentResponseFieldsInnerInnerValue=DocumentResponseFieldsInnerInnerValue,
     DocumentResponseRecipientsInner=DocumentResponseRecipientsInner,
+    DocumentResponseRecipientsInnerPasscodeDelivery=DocumentResponseRecipientsInnerPasscodeDelivery,
+    DocumentResponseRecipientsInnerSms=DocumentResponseRecipientsInnerSms,
     DocumentTemplateListResponse=DocumentTemplateListResponse,
     DocumentTemplateRequest=DocumentTemplateRequest,
     DocumentTemplateResponse=DocumentTemplateResponse,
@@ -229,6 +257,11 @@ Models = SimpleNamespace(
     DocumentTemplateResponsePlaceholdersInner=DocumentTemplateResponsePlaceholdersInner,
     DocumentTemplateUpdateRequest=DocumentTemplateUpdateRequest,
     DropdownOption=DropdownOption,
+    EmbeddedBranding=EmbeddedBranding,
+    EmbeddedBrandingBranding=EmbeddedBrandingBranding,
+    EmbeddedBrandingRequest=EmbeddedBrandingRequest,
+    EmbeddedBrandingRequestCompanyLogo=EmbeddedBrandingRequestCompanyLogo,
+    EmbeddedRequest=EmbeddedRequest,
     ErrorResponse=ErrorResponse,
     ErrorResponseMeta=ErrorResponseMeta,
     FieldType=FieldType,
@@ -248,8 +281,10 @@ Models = SimpleNamespace(
     Nom151UrlResponse=Nom151UrlResponse,
     PaginationMeta=PaginationMeta,
     PlaceholdersInner=PlaceholdersInner,
+    PlaceholdersInnerPasscodeDelivery=PlaceholdersInnerPasscodeDelivery,
     RateLimitErrorResponse=RateLimitErrorResponse,
     RecipientsInner=RecipientsInner,
+    RecipientsInnerPasscodeDelivery=RecipientsInnerPasscodeDelivery,
     ReminderRecipientsInner=ReminderRecipientsInner,
     SendReminderRequest=SendReminderRequest,
     TemplateAttachmentRequestsInner=TemplateAttachmentRequestsInner,
@@ -259,8 +294,11 @@ Models = SimpleNamespace(
     TemplateFieldsInnerInner=TemplateFieldsInnerInner,
     TemplateRecipientsInner=TemplateRecipientsInner,
     TextValidation=TextValidation,
+    UpdateAuthenticationRequest=UpdateAuthenticationRequest,
+    UpdateAuthenticationRequestRecipientsInner=UpdateAuthenticationRequestRecipientsInner,
     UpdateDocumentAndSendRequest=UpdateDocumentAndSendRequest,
     UpdateRecipientsMapInner=UpdateRecipientsMapInner,
+    UpdateRecipientsMapInnerPasscodeDelivery=UpdateRecipientsMapInnerPasscodeDelivery,
     UpdateRecipientsRequest=UpdateRecipientsRequest,
     ValidationErrorResponse=ValidationErrorResponse,
     WebhookResponse=WebhookResponse,

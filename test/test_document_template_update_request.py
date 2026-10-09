@@ -48,6 +48,26 @@ class TestDocumentTemplateUpdateRequest(unittest.TestCase):
                 allow_decline = True,
                 allow_reassign = True,
                 decline_redirect_url = '',
+                conditional_rules = [
+                    signwell_sdk.models.conditional_rule_request.ConditionalRuleRequest(
+                        id = '', 
+                        deleted = True, 
+                        target_id = '', 
+                        action_type = 'show', 
+                        action_field_ids = [
+                            ''
+                            ], 
+                        conditions = [
+                            signwell_sdk.models.conditional_rule_request_conditions_inner.ConditionalRuleRequest_conditions_inner(
+                                condition_type = 'any_of', 
+                                status = 'completed', 
+                                join_operator = 'and_operator', 
+                                field_api_ids = [
+                                    ''
+                                    ], 
+                                position = 56, )
+                            ], )
+                    ],
                 metadata = {
                     'key' : ''
                     },

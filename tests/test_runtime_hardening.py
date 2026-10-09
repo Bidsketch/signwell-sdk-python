@@ -119,6 +119,21 @@ def test_error_response_deserialization_errors_are_not_replaced_by_status_errors
         api_client.response_deserialize(cast(rest.RESTResponse, response), {"400": "ErrorResponse"})
 
 
+def test_default_user_agent_identifies_the_signwell_python_sdk() -> None:
+    api_client = signwell_sdk.ApiClient(signwell_sdk.Configuration())
+
+    # user_agent is a view over default_headers['User-Agent'], which is the header rest.py sends.
+    assert api_client.default_headers["User-Agent"] == f"signwell-sdk-python/{signwell_sdk.__version__}"
+
+
+def test_caller_supplied_user_agent_replaces_the_default() -> None:
+    api_client = signwell_sdk.ApiClient(signwell_sdk.Configuration())
+
+    api_client.user_agent = "MyApp/1.0"
+
+    assert api_client.default_headers["User-Agent"] == "MyApp/1.0"
+
+
 def test_api_exception_from_response_is_typed_as_no_return() -> None:
     hints = get_type_hints(signwell_sdk.ApiException.from_response)
 

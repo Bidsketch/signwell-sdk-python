@@ -12,6 +12,7 @@ Method | HTTP request | Description
 [**list_documents**](DocumentApi.md#list_documents) | **GET** /api/v1/documents | List Documents
 [**send_document**](DocumentApi.md#send_document) | **POST** /api/v1/documents/{id}/send | Update and Send Document
 [**send_reminder**](DocumentApi.md#send_reminder) | **POST** /api/v1/documents/{id}/remind | Send Reminder
+[**update_authentication**](DocumentApi.md#update_authentication) | **PATCH** /api/v1/documents/{id}/authentication | Update Authentication
 [**update_recipients**](DocumentApi.md#update_recipients) | **PATCH** /api/v1/documents/{id}/recipients | Update Recipients
 
 
@@ -20,7 +21,7 @@ Method | HTTP request | Description
 
 Create Document
 
-Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent.
+Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent. Recipients are notified by email, SMS, or both based on each recipient's `delivery_method`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled, and requires a `phone_number` in E.164 format.
 
 ### Example
 
@@ -51,7 +52,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -105,7 +105,7 @@ Name | Type | Description  | Notes
 
 Create Document from Template
 
-Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent.
+Creates and optionally sends a new document for signing. If `draft` is set to true the document will not be sent. Pre-signed template signatures and initials are copied to the new document as document content — they remain visible on the document but do not generate a signing event, do not emit a `document_signed` webhook, and the recipient's status will not reflect them as a real signing action. If the template was pre-signed for a signer and the request adds new unsigned signature/initials fields for that same signer, the pre-applied ratifications are cleared silently so the signer is asked to sign once. Recipients are notified by email, SMS, or both based on each recipient's `delivery_method`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled, and requires a `phone_number` in E.164 format.
 
 ### Example
 
@@ -136,7 +136,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -219,7 +218,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -301,7 +299,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -360,7 +357,7 @@ Name | Type | Description  | Notes
 
 Get Document
 
-Returns a document and all associated document data. Supply the unique document ID from either a document creation request or Document page URL.
+Returns a document and all associated document data. Supply the unique document ID from either a document creation request or Document page URL. Each recipient includes its `delivery_method`, and recipients whose delivery includes SMS also include an `sms` object with the masked phone number and SMS delivery status.
 
 ### Example
 
@@ -390,7 +387,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -473,7 +469,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -530,7 +525,7 @@ Name | Type | Description  | Notes
 
 Update and Send Document
 
-Updates a draft document and sends it to be signed by recipients.
+Updates a draft document and sends it to be signed by recipients. `subject` and `message` apply to email notifications only; SMS notifications always use fixed system templates.
 
 ### Example
 
@@ -561,7 +556,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -616,7 +610,7 @@ Name | Type | Description  | Notes
 
 Send Reminder
 
-Sends a reminder email to recipients that have not signed yet.
+Sends a reminder to recipients who have not signed yet. Each recipient is reminded through their delivery method (email, SMS, or both). SMS reminders are only sent to recipients whose delivery method includes SMS, and only when the workspace is eligible for SMS and has it enabled.
 
 ### Example
 
@@ -646,7 +640,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -689,8 +682,95 @@ void (empty response body)
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **201** | created |  -  |
-**422** | unprocessable entity |  -  |
 **404** | not found |  -  |
+**422** | unprocessable entity |  -  |
+**429** | rate limit exceeded |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **update_authentication**
+> DocumentResponse update_authentication(id, update_authentication_request)
+
+Update Authentication
+
+Update passcode delivery settings for recipients on a sent document. Only recipients who have not started signing can be updated.
+
+### Example
+
+* Api Key Authentication (api_key):
+
+```python
+import os
+from pprint import pprint
+
+import signwell_sdk
+from signwell_sdk.models.document_response import DocumentResponse
+from signwell_sdk.models.update_authentication_request import UpdateAuthenticationRequest
+from signwell_sdk.rest import ApiException
+
+# Defining the host is optional and defaults to https://www.signwell.com
+# See configuration.py for a list of all supported configuration parameters.
+configuration = signwell_sdk.Configuration(
+    host = "https://www.signwell.com"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure API key authorization: api_key
+configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
+
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['api_key'] = 'Bearer'
+# Enter a context with an instance of the API client
+with signwell_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = signwell_sdk.DocumentApi(api_client)
+    id = 'id_example' # str | 
+    update_authentication_request = signwell_sdk.UpdateAuthenticationRequest() # UpdateAuthenticationRequest | 
+
+    try:
+        # Update Authentication
+        api_response = api_instance.update_authentication(id, update_authentication_request)
+        print("The response of DocumentApi->update_authentication:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DocumentApi->update_authentication: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**|  | 
+ **update_authentication_request** | [**UpdateAuthenticationRequest**](UpdateAuthenticationRequest.md)|  | 
+
+### Return type
+
+[**DocumentResponse**](DocumentResponse.md)
+
+### Authorization
+
+[api_key](../README.md#api_key)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | successful |  -  |
+**400** | bad request - invalid delivery methods |  -  |
+**404** | not found |  -  |
+**422** | unprocessable entity - invalid delivery methods |  -  |
 **429** | rate limit exceeded |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -700,7 +780,7 @@ void (empty response body)
 
 Update Recipients
 
-Updates one or more recipients on a document that has already been sent. Only recipients who have not started signing may be updated. Recipient IDs must be retrieved from the Get Document response. Allowed document statuses: sent, viewed, pending, bounced. For non-embedded documents, updated recipients will receive a new notification email. For embedded signing documents, email behavior follows each recipient's send_email setting.
+Updates one or more recipients on a document that has already been sent. Only recipients who have not started signing may be updated. Recipient IDs must be retrieved from the Get Document response. Allowed document statuses: sent, viewed, pending, bounced. For non-embedded documents, updated recipients will receive a new notification email. For embedded signing documents, email behavior follows each recipient's send_email setting. This endpoint does not support changing a recipient's `delivery_method` or `phone_number`; SMS delivery settings are set when the document is created.
 
 ### Example
 
@@ -731,7 +811,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -776,10 +855,10 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | successful |  -  |
-**409** | conflict - document not in eligible state |  -  |
 **400** | bad request - invalid structure |  -  |
-**422** | unprocessable entity - business rule violation |  -  |
 **404** | not found |  -  |
+**409** | conflict - document not in eligible state |  -  |
+**422** | unprocessable entity - business rule violation |  -  |
 **429** | rate limit exceeded |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

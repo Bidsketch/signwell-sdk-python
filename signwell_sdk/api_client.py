@@ -84,7 +84,7 @@ class ApiClient:
             self.default_headers[header_name] = header_value
         self.cookie = cookie
         # Set default User-Agent.
-        self.user_agent = "SignWell-Python-SDK/0.1.0"
+        self.user_agent = "signwell-sdk-python/0.2.0"
         self.client_side_validation = configuration.client_side_validation
 
     def __enter__(self):

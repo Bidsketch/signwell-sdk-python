@@ -19,6 +19,8 @@ Name | Type | Description | Notes
 **required** | **bool** |  | [optional] 
 **type** | [**FieldType**](FieldType.md) |  | [optional] 
 **validation** | [**TextValidation**](TextValidation.md) |  | [optional] 
+**validation_regex** | **str** | Text fields with custom validation only: the regex pattern used to validate field values. Required when validation is set to custom. | [optional] 
+**validation_regex_error_message** | **str** | Text fields with custom validation only: the error message shown to the recipient when their input doesn&#39;t match the regex pattern. Required when validation is set to custom. | [optional] 
 **value** | [**DocumentResponseFieldsInnerInnerValue**](DocumentResponseFieldsInnerInnerValue.md) |  | [optional] 
 **height** | **str** |  | [optional] 
 **width** | **str** |  | [optional] 

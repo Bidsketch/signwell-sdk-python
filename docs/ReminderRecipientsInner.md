@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **str** | Recipient&#39;s name (required if multiple recipients share the same email). | [optional] 
-**email** | **str** | Recipient&#39;s email address. | [optional] 
+**email** | **str** | Recipient&#39;s email address. Used to match the recipient to remind; not required for SMS-only recipients, who can be identified by name instead. | [optional] 
 
 ## Example
 

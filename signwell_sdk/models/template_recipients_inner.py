@@ -15,8 +15,9 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
+from signwell_sdk.models.recipients_inner_passcode_delivery import RecipientsInnerPasscodeDelivery
 from typing import Any, Optional, Set
 from typing_extensions import Self
 
@@ -29,15 +30,23 @@ class TemplateRecipientsInner(BaseModel):
     id: StrictStr = Field(
         description="A unique identifier that you will give to each recipient. We recommend numbering sequentially from 1 to X. IDs are required for associating recipients to fields and more."
     )
-    name: StrictStr | None = Field(default=None, description="Name of the recipient.")
-    email: StrictStr = Field(description="Email address for the recipient.")
+    name: StrictStr | None = Field(
+        default=None,
+        description="Name of the recipient. Required on 21 CFR Part 11 documents: a recipient without a name returns a 422.",
+    )
+    email: StrictStr | None = Field(
+        default=None,
+        description="Email address for the recipient. Required unless `delivery_method` is `sms`.",
+        json_schema_extra={"examples": ["signer@example.com"]},
+    )
     placeholder_name: StrictStr | None = Field(
         default=None, description="The name of the placeholder you want this recipient assigned to."
     )
     passcode: StrictStr | None = Field(
         default=None,
-        description="If set, signers assigned with a passcode will be required to enter the passcode before they’re able to view and complete the document.",
+        description="If set, signers assigned with a passcode will be required to enter the passcode before they’re able to view and complete the document. On a 21 CFR Part 11 document SignWell generates the passcode, so a sender-defined passcode returns a 422.",
     )
+    passcode_delivery: RecipientsInnerPasscodeDelivery | None = None
     subject: StrictStr | None = Field(
         default=None,
         description="Email subject for the signature request that the recipient will see. Overrides the general subject for the template.",
@@ -54,6 +63,23 @@ class TemplateRecipientsInner(BaseModel):
         default=0,
         description="If `send_email` is `true` recipients will receive a new document notification immediately. In the case of embedded signing, you can delay this notification to only send if the document is not completed within a few minutes. The email notification will not go out if the document is completed before the delay time is over. Valid values are in minutes ranging from `0` to `60`. Defaults to `0`.",
     )
+    delivery_method: StrictStr | None = Field(
+        default="email",
+        description="How the recipient is notified and receives the signing link: `email` (default), `sms`, or `email_and_sms`. SMS delivery is available only to workspaces that are eligible for SMS and have it enabled. `email` requires `email`, `sms` requires `phone_number`, and `email_and_sms` requires both. SMS content always uses fixed system templates; `subject` and `message` apply to email notifications only. A 21 CFR Part 11 document records one verified channel per recipient: `email` and `sms` are both accepted, while `email_and_sms` returns a 422.",
+    )
+    phone_number: StrictStr | None = Field(
+        default=None,
+        description="Recipient phone number in E.164 format (for example `+14155551234`). Required when `delivery_method` is `sms` or `email_and_sms`. Only phone numbers from the country codes currently enabled for SMS are accepted.",
+        json_schema_extra={"examples": ["+14155551234"]},
+    )
+    send_sms: StrictBool | None = Field(
+        default=False,
+        description="Applies only when `embedded_signing` is `true` and the recipient's `delivery_method` includes SMS. By default, recipients are not notified through SMS when doing embedded signing. Setting this to `true` will send the SMS notification to the recipient. Default is `false`.",
+    )
+    send_sms_delay: StrictInt | None = Field(
+        default=0,
+        description="If `send_sms` is `true` the recipient will receive the SMS notification immediately. In the case of embedded signing, you can delay this notification to only send if the document is not completed within a few minutes. The SMS will not go out if the document is completed before the delay time is over. Valid values are in minutes ranging from `0` to `60`. Defaults to `0`.",
+    )
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = [
         "id",
@@ -61,11 +87,26 @@ class TemplateRecipientsInner(BaseModel):
         "email",
         "placeholder_name",
         "passcode",
+        "passcode_delivery",
         "subject",
         "message",
         "send_email",
         "send_email_delay",
+        "delivery_method",
+        "phone_number",
+        "send_sms",
+        "send_sms_delay",
     ]
+
+    @field_validator("delivery_method")
+    def delivery_method_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(["email", "sms", "email_and_sms"]):
+            raise ValueError("must be one of enum values ('email', 'sms', 'email_and_sms')")
+        return value
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -109,6 +150,9 @@ class TemplateRecipientsInner(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of passcode_delivery
+        if self.passcode_delivery:
+            _dict["passcode_delivery"] = self.passcode_delivery.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -132,10 +176,17 @@ class TemplateRecipientsInner(BaseModel):
                 "email": obj.get("email"),
                 "placeholder_name": obj.get("placeholder_name"),
                 "passcode": obj.get("passcode"),
+                "passcode_delivery": RecipientsInnerPasscodeDelivery.from_dict(obj["passcode_delivery"])
+                if obj.get("passcode_delivery") is not None
+                else None,
                 "subject": obj.get("subject"),
                 "message": obj.get("message"),
                 "send_email": obj.get("send_email") if obj.get("send_email") is not None else False,
                 "send_email_delay": obj.get("send_email_delay") if obj.get("send_email_delay") is not None else 0,
+                "delivery_method": obj.get("delivery_method") if obj.get("delivery_method") is not None else "email",
+                "phone_number": obj.get("phone_number"),
+                "send_sms": obj.get("send_sms") if obj.get("send_sms") is not None else False,
+                "send_sms_delay": obj.get("send_sms_delay") if obj.get("send_sms_delay") is not None else 0,
             }
         )
         # store additional fields in additional_properties

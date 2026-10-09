@@ -16,7 +16,7 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar, Dict, List, Optional
 from typing import Any, Optional, Set
 from typing_extensions import Self
 
@@ -26,7 +26,7 @@ class FileInfo(BaseModel):
     File information
     """  # noqa: E501
 
-    name: StrictStr = Field(description="File name")
+    name: StrictStr | None = Field(default=None, description="File name")
     pages_number: StrictInt = Field(description="Number of pages in the file")
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["name", "pages_number"]
@@ -77,6 +77,11 @@ class FileInfo(BaseModel):
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
                 _dict[_key] = _value
+
+        # set to None if name (nullable) is None
+        # and model_fields_set contains the field
+        if self.name is None and "name" in self.model_fields_set:
+            _dict["name"] = None
 
         return _dict
 

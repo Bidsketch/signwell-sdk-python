@@ -44,6 +44,15 @@ class TestDocumentResponseRecipientsInner(unittest.TestCase):
                 subject = '',
                 send_email = True,
                 send_email_delay = 56,
+                delivery_method = 'email',
+                sms = signwell_sdk.models.document_response_recipients_inner_sms.DocumentResponse_recipients_inner_sms(
+                    phone_number_masked = '', 
+                    send_sms = True, 
+                    send_sms_delay = 56, 
+                    delivery_status = '', 
+                    message_type = '', 
+                    failed = True, 
+                    failed_details = '', ),
                 signing_order = 56,
                 signing_url = '',
                 embedded_signing_url = '',
@@ -56,6 +65,12 @@ class TestDocumentResponseRecipientsInner(unittest.TestCase):
                         required = True, )
                     ],
                 passcode = '',
+                passcode_delivery = signwell_sdk.models.document_response_recipients_inner_passcode_delivery.DocumentResponse_recipients_inner_passcode_delivery(
+                    enabled = True, 
+                    methods = [
+                        ''
+                        ], 
+                    expire_after_access = True, ),
                 status = ''
             )
         else:
