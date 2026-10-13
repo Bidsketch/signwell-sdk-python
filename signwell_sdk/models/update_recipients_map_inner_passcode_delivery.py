@@ -44,9 +44,8 @@ class UpdateRecipientsMapInnerPasscodeDelivery(BaseModel):
         if value is None:
             return value
 
-        for i in value:
-            if i not in set(["email"]):
-                raise ValueError("each list item must be one of ('email')")
+        allowed = {"email", "unknown_default_open_api"}
+        return [item if item in allowed else "unknown_default_open_api" for item in value]
         return value
 
     model_config = ConfigDict(

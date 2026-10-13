@@ -42,15 +42,15 @@ class ConditionalRuleRequestConditionsInner(BaseModel):
     @field_validator("condition_type")
     def condition_type_validate_enum(cls, value):
         """Validates the enum"""
-        if value not in set(["any_of", "all_of", "none_of", "not_all_of"]):
-            raise ValueError("must be one of enum values ('any_of', 'all_of', 'none_of', 'not_all_of')")
+        if value not in {"any_of", "all_of", "none_of", "not_all_of", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     @field_validator("status")
     def status_validate_enum(cls, value):
         """Validates the enum"""
-        if value not in set(["completed", "not_completed"]):
-            raise ValueError("must be one of enum values ('completed', 'not_completed')")
+        if value not in {"completed", "not_completed", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     @field_validator("join_operator")
@@ -59,8 +59,8 @@ class ConditionalRuleRequestConditionsInner(BaseModel):
         if value is None:
             return value
 
-        if value not in set(["and_operator", "or_operator"]):
-            raise ValueError("must be one of enum values ('and_operator', 'or_operator')")
+        if value not in {"and_operator", "or_operator", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     model_config = ConfigDict(

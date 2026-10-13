@@ -42,8 +42,8 @@ class ConditionalRuleInfo(BaseModel):
     @field_validator("action_type")
     def action_type_validate_enum(cls, value):
         """Validates the enum"""
-        if value not in set(["show", "hide", "require"]):
-            raise ValueError("must be one of enum values ('show', 'hide', 'require')")
+        if value not in {"show", "hide", "require", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     model_config = ConfigDict(

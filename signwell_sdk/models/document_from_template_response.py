@@ -144,8 +144,8 @@ class DocumentFromTemplateResponse(BaseModel):
         if value is None:
             return value
 
-        if value not in set(["streamlined", "per_signature"]):
-            raise ValueError("must be one of enum values ('streamlined', 'per_signature')")
+        if value not in {"streamlined", "per_signature", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     model_config = ConfigDict(

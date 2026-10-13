@@ -26,6 +26,13 @@ class FileFormat(str, Enum):
     """
     PDF = "pdf"
     ZIP = "zip"
+    UNKNOWN_DEFAULT_OPEN_API = "unknown_default_open_api"
+
+    @classmethod
+    def _missing_(cls, value):
+        if isinstance(value, str):
+            return cls.UNKNOWN_DEFAULT_OPEN_API
+        return None
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

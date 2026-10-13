@@ -206,6 +206,7 @@ class Configuration:
         ca_cert_data: Union[str, bytes] | None = None,
         *,
         debug: bool | None = None,
+        max_rate_limit_retries: int = 2,
     ) -> None:
         """Constructor"""
         self._base_path = "https://www.signwell.com" if host is None else host
@@ -316,8 +317,9 @@ class Configuration:
         self.safe_chars_for_path_param = ""
         """Safe chars for path_param
         """
+        self.max_rate_limit_retries = max_rate_limit_retries
         self.retries = retries
-        """Adding retries to override urllib3 default value 3
+        """Explicit urllib3 retry policy override; otherwise the SDK retries only HTTP 429.
         """
         # Enable client side validation
         self.client_side_validation = True
@@ -333,6 +335,16 @@ class Configuration:
         self.date_format = "%Y-%m-%d"
         """date format
         """
+
+    @property
+    def max_rate_limit_retries(self) -> int:
+        return self._max_rate_limit_retries
+
+    @max_rate_limit_retries.setter
+    def max_rate_limit_retries(self, value: int) -> None:
+        if type(value) is not int or not 0 <= value <= 10:
+            raise ValueError("Rate limit retries must be an integer between zero and ten.")
+        self._max_rate_limit_retries = value
 
     def __deepcopy__(self, memo: Dict[int, Any]) -> Self:
         cls = self.__class__

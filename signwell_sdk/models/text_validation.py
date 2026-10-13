@@ -36,6 +36,13 @@ class TextValidation(str, Enum):
     US_BANK_ROUTING_NUMBER = "us_bank_routing_number"
     US_BANK_ACCOUNT_NUMBER = "us_bank_account_number"
     CUSTOM = "custom"
+    UNKNOWN_DEFAULT_OPEN_API = "unknown_default_open_api"
+
+    @classmethod
+    def _missing_(cls, value):
+        if isinstance(value, str):
+            return cls.UNKNOWN_DEFAULT_OPEN_API
+        return None
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

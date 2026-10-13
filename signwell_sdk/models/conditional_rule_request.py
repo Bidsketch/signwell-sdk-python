@@ -59,8 +59,8 @@ class ConditionalRuleRequest(BaseModel):
         if value is None:
             return value
 
-        if value not in set(["show", "hide", "require"]):
-            raise ValueError("must be one of enum values ('show', 'hide', 'require')")
+        if value not in {"show", "hide", "require", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     model_config = ConfigDict(

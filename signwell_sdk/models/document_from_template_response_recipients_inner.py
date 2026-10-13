@@ -83,8 +83,8 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
         if value is None:
             return value
 
-        if value not in set(["email", "sms", "email_and_sms"]):
-            raise ValueError("must be one of enum values ('email', 'sms', 'email_and_sms')")
+        if value not in {"email", "sms", "email_and_sms", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     model_config = ConfigDict(

@@ -40,8 +40,8 @@ class ConditionalLogicDecisionInfo(BaseModel):
     @field_validator("decision_type")
     def decision_type_validate_enum(cls, value):
         """Validates the enum"""
-        if value not in set(["kept_signature", "cleared_value"]):
-            raise ValueError("must be one of enum values ('kept_signature', 'cleared_value')")
+        if value not in {"kept_signature", "cleared_value", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     model_config = ConfigDict(

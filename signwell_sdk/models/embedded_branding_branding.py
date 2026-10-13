@@ -48,8 +48,8 @@ class EmbeddedBrandingBranding(BaseModel):
         if value is None:
             return value
 
-        if value not in set(["provided"]):
-            raise ValueError("must be one of enum values ('provided')")
+        if value not in {"provided", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     model_config = ConfigDict(

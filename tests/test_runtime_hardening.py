@@ -12,6 +12,76 @@ import signwell_sdk
 from signwell_sdk import rest
 
 
+def test_future_enums_preserve_document_reads_and_reject_wrong_types() -> None:
+    from signwell_sdk.models.document_response_fields_inner_inner import DocumentResponseFieldsInnerInner
+    from signwell_sdk.models.recipients_inner_passcode_delivery import RecipientsInnerPasscodeDelivery
+    from signwell_sdk.models.recipients_inner import RecipientsInner
+
+    field = DocumentResponseFieldsInnerInner.from_dict({"x": 1, "y": 2, "page": 1, "date_format": "future_format"})
+    assert field is not None and field.date_format is not None
+    assert field.date_format.value == "unknown_default_open_api"
+    recipient = RecipientsInner.from_dict({"id": "1", "delivery_method": "future_method"})
+    assert recipient is not None and recipient.delivery_method == "unknown_default_open_api"
+    delivery = RecipientsInnerPasscodeDelivery.from_dict({"methods": ["email", "future_method"]})
+    assert delivery is not None and delivery.methods == ["email", "unknown_default_open_api"]
+    with pytest.raises(ValueError):
+        DocumentResponseFieldsInnerInner.from_dict({"x": 1, "y": 2, "page": 1, "date_format": 17})
+
+
+def test_rate_limit_policy_replays_bodies_and_preserves_errors(monkeypatch: pytest.MonkeyPatch) -> None:
+    from signwell_sdk.api.document_api import DocumentApi
+    from signwell_sdk.models.document_request import DocumentRequest
+    import urllib3
+
+    waits: list[float] = []
+    monkeypatch.setattr(rest.time, "sleep", waits.append)
+    for status, header, limit, expected in [(429, "0", 2, 3), (429, "0", 0, 1), (429, "120", 2, 1), (500, "0", 2, 1)]:
+        config = signwell_sdk.Configuration(max_rate_limit_retries=limit)
+        client = signwell_sdk.ApiClient(config)
+        calls: list[Any] = []
+        responses: list[Any] = []
+
+        def request(
+            *args: Any,
+            status: int = status,
+            header: str = header,
+            calls: list[Any] = calls,
+            responses: list[Any] = responses,
+            **kwargs: Any,
+        ) -> Any:
+            calls.append(kwargs.get("body"))
+            response = urllib3.HTTPResponse(
+                body=b'{"error":"limited"}',
+                status=status,
+                headers={"Content-Type": "application/json", "Retry-After": header},
+                preload_content=False,
+            )
+            responses.append(response)
+            return response
+
+        monkeypatch.setattr(client.rest_client.pool_manager, "request", request)
+        with pytest.raises(signwell_sdk.ApiException) as error:
+            DocumentApi(client).create_document(
+                DocumentRequest(name="Retry document", test_mode=True, files=[], recipients=[])
+            )
+        assert error.value.status == status
+        assert len(calls) == expected
+        assert all(body == calls[0] for body in calls)
+        assert all(response.closed for response in responses[:-1])
+    # Default backoff and invalid headers use one then two seconds; downloads return only the final body.
+    client = signwell_sdk.ApiClient(signwell_sdk.Configuration())
+    queue = [
+        urllib3.HTTPResponse(body=b"limited", status=429, preload_content=False),
+        urllib3.HTTPResponse(body=b"limited", status=429, headers={"Retry-After": "invalid"}, preload_content=False),
+        urllib3.HTTPResponse(
+            body=b"%PDF", status=200, headers={"Content-Type": "application/pdf"}, preload_content=False
+        ),
+    ]
+    monkeypatch.setattr(client.rest_client.pool_manager, "request", lambda *args, **kwargs: queue.pop(0))
+    assert DocumentApi(client).get_completed_pdf("doc_1") == b"%PDF"
+    assert waits[-2:] == [1, 2]
+
+
 class FakeRestResponse:
     def __init__(
         self,

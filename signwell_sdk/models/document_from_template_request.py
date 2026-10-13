@@ -215,8 +215,8 @@ class DocumentFromTemplateRequest(BaseModel):
         if value is None:
             return value
 
-        if value not in set(["replace", "append", "none"]):
-            raise ValueError("must be one of enum values ('replace', 'append', 'none')")
+        if value not in {"replace", "append", "none", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
         return value
 
     model_config = ConfigDict(
