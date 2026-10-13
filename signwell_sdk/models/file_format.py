@@ -18,7 +18,7 @@ from typing_extensions import Self
 
 class FileFormat(str, Enum):
     """
-    Format of the file to be downloaded. Supported formats are 'pdf' and 'zip'.
+    Format of the file to be downloaded. Supported formats are 'pdf' and 'zip'. `zip` is unavailable on a 21 CFR Part 11 document, whose completed PDF, E-Signature page and audit page stay together as one record.
     """
 
     """
@@ -26,6 +26,13 @@ class FileFormat(str, Enum):
     """
     PDF = "pdf"
     ZIP = "zip"
+    UNKNOWN_DEFAULT_OPEN_API = "unknown_default_open_api"
+
+    @classmethod
+    def _missing_(cls, value):
+        if isinstance(value, str):
+            return cls.UNKNOWN_DEFAULT_OPEN_API
+        return None
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

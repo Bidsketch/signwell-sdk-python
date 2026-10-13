@@ -83,6 +83,13 @@ class TestDocumentApi(unittest.TestCase):
         """
         pass
 
+    def test_update_authentication(self) -> None:
+        """Test case for update_authentication
+
+        Update Authentication
+        """
+        pass
+
     def test_update_recipients(self) -> None:
         """Test case for update_recipients
 

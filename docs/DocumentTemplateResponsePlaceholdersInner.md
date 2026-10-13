@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **preassigned_recipient_email** | **str** |  | [optional] 
 **signing_order** | **int** |  | [optional] 
 **attachment_requests** | [**List[AttachmentRequestInfo]**](AttachmentRequestInfo.md) |  | [optional] 
+**passcode_delivery** | [**DocumentResponseRecipientsInnerPasscodeDelivery**](DocumentResponseRecipientsInnerPasscodeDelivery.md) |  | [optional] 
 
 ## Example
 

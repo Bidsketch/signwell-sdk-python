@@ -20,7 +20,7 @@ from pydantic import StrictStr, Field
 from typing import Union, List, Set, Optional, Dict, cast
 from typing_extensions import Literal, Self
 
-COMPLETEDPDFRESPONSE_ONE_OF_SCHEMAS = ["CompletedPdfUrlResponse", "bytearray"]
+COMPLETEDPDFRESPONSE_ONE_OF_SCHEMAS = ["CompletedPdfUrlResponse", "bytes"]
 
 
 class CompletedPdfResponse(BaseModel):
@@ -30,16 +30,16 @@ class CompletedPdfResponse(BaseModel):
 
     # data type: CompletedPdfUrlResponse
     oneof_schema_1_validator: CompletedPdfUrlResponse | None = None
-    # data type: bytearray
+    # data type: bytes
     oneof_schema_2_validator: Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]] | None = Field(
         default=None, description="Raw PDF binary data (default response when url_only=false)"
     )
-    # data type: bytearray
+    # data type: bytes
     oneof_schema_3_validator: Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]] | None = Field(
         default=None, description="ZIP file containing the completed PDF (returned when file_format=zip)"
     )
-    actual_instance: Union[CompletedPdfUrlResponse, bytearray] | None = None
-    one_of_schemas: Set[str] = {"CompletedPdfUrlResponse", "bytearray"}
+    actual_instance: Union[CompletedPdfUrlResponse, bytes] | None = None
+    one_of_schemas: Set[str] = {"CompletedPdfUrlResponse", "bytes"}
 
     model_config = ConfigDict(
         validate_assignment=True,
@@ -67,13 +67,13 @@ class CompletedPdfResponse(BaseModel):
             error_messages.append(f"Error! Input type `{type(v)}` is not `CompletedPdfUrlResponse`")
         else:
             match += 1
-        # validate data type: bytearray
+        # validate data type: bytes
         try:
             instance.oneof_schema_2_validator = v
             match += 1
         except (ValidationError, ValueError) as e:
             error_messages.append(str(e))
-        # validate data type: bytearray
+        # validate data type: bytes
         try:
             instance.oneof_schema_3_validator = v
             match += 1
@@ -82,13 +82,13 @@ class CompletedPdfResponse(BaseModel):
         if match > 1:
             # more than 1 match
             raise ValueError(
-                "Multiple matches found when setting `actual_instance` in CompletedPdfResponse with oneOf schemas: CompletedPdfUrlResponse, bytearray. Details: "
+                "Multiple matches found when setting `actual_instance` in CompletedPdfResponse with oneOf schemas: CompletedPdfUrlResponse, bytes. Details: "
                 + ", ".join(error_messages)
             )
         elif match == 0:
             # no match
             raise ValueError(
-                "No match found when setting `actual_instance` in CompletedPdfResponse with oneOf schemas: CompletedPdfUrlResponse, bytearray. Details: "
+                "No match found when setting `actual_instance` in CompletedPdfResponse with oneOf schemas: CompletedPdfUrlResponse, bytes. Details: "
                 + ", ".join(error_messages)
             )
         else:
@@ -111,25 +111,25 @@ class CompletedPdfResponse(BaseModel):
             match += 1
         except (ValidationError, ValueError) as e:
             error_messages.append(str(e))
-        # deserialize data into bytearray
+        # deserialize data into bytes
         try:
             # validation
             instance.oneof_schema_2_validator = json.loads(json_str)
             # assign value to actual_instance
             instance.actual_instance = cast(
-                Union[CompletedPdfUrlResponse, bytearray],
+                Union[CompletedPdfUrlResponse, bytes],
                 instance.oneof_schema_2_validator,
             )
             match += 1
         except (ValidationError, ValueError) as e:
             error_messages.append(str(e))
-        # deserialize data into bytearray
+        # deserialize data into bytes
         try:
             # validation
             instance.oneof_schema_3_validator = json.loads(json_str)
             # assign value to actual_instance
             instance.actual_instance = cast(
-                Union[CompletedPdfUrlResponse, bytearray],
+                Union[CompletedPdfUrlResponse, bytes],
                 instance.oneof_schema_3_validator,
             )
             match += 1
@@ -139,13 +139,13 @@ class CompletedPdfResponse(BaseModel):
         if match > 1:
             # more than 1 match
             raise ValueError(
-                "Multiple matches found when deserializing the JSON string into CompletedPdfResponse with oneOf schemas: CompletedPdfUrlResponse, bytearray. Details: "
+                "Multiple matches found when deserializing the JSON string into CompletedPdfResponse with oneOf schemas: CompletedPdfUrlResponse, bytes. Details: "
                 + ", ".join(error_messages)
             )
         elif match == 0:
             # no match
             raise ValueError(
-                "No match found when deserializing the JSON string into CompletedPdfResponse with oneOf schemas: CompletedPdfUrlResponse, bytearray. Details: "
+                "No match found when deserializing the JSON string into CompletedPdfResponse with oneOf schemas: CompletedPdfUrlResponse, bytes. Details: "
                 + ", ".join(error_messages)
             )
         else:
@@ -161,7 +161,7 @@ class CompletedPdfResponse(BaseModel):
         else:
             return json.dumps(self.actual_instance)
 
-    def to_dict(self) -> Union[Dict[str, Any], CompletedPdfUrlResponse, bytearray] | None:
+    def to_dict(self) -> Union[Dict[str, Any], CompletedPdfUrlResponse, bytes] | None:
         """Returns the dict representation of the actual instance"""
         if self.actual_instance is None:
             return None

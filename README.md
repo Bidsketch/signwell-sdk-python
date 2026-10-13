@@ -18,6 +18,18 @@ With uv:
 uv add signwell-sdk-python
 ```
 
+## Retries and future API values
+
+Explicit HTTP 429 responses retry up to twice, including JSON POST requests and
+downloads. Retry-After seconds or HTTP dates are honored; absent or invalid
+headers use one then two seconds of backoff. A requested wait above 60 seconds
+returns the rate-limit error immediately. Network failures and other status codes
+are not retried by default. Disable SDK retries with `Configuration(max_rate_limit_retries=0)`.
+An explicitly supplied `Configuration.retries` retains control of the underlying urllib3 policy.
+
+Unknown enum strings returned by the API remain readable as `unknown_default_open_api`.
+Known enum values keep their existing API strings.
+
 ## Quick Start
 
 ```python

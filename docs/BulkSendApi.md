@@ -48,7 +48,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -91,8 +90,8 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **201** | successful |  -  |
-**422** | unprocessable entity |  -  |
 **401** | unauthorized |  -  |
+**422** | unprocessable entity |  -  |
 **429** | rate limit exceeded |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -132,7 +131,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -182,7 +180,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_bulk_send_csv_template**
-> bytearray get_bulk_send_csv_template(template_ids, var_base64=var_base64)
+> bytes get_bulk_send_csv_template(template_ids, var_base64=var_base64)
 
 Get Bulk Send CSV Template
 
@@ -215,7 +213,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -244,7 +241,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**bytearray**
+**bytes**
 
 ### Authorization
 
@@ -301,7 +298,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -389,7 +385,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -479,7 +474,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -522,8 +516,8 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | successful |  -  |
-**422** | unprocessable entity |  -  |
 **401** | unauthorized |  -  |
+**422** | unprocessable entity |  -  |
 **429** | rate limit exceeded |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

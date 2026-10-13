@@ -39,7 +39,13 @@ class TestPlaceholdersInner(unittest.TestCase):
                 id = '',
                 name = '',
                 preassigned_recipient_name = '',
-                preassigned_recipient_email = ''
+                preassigned_recipient_email = '',
+                passcode_delivery = signwell_sdk.models.placeholders_inner_passcode_delivery.Placeholders_inner_passcode_delivery(
+                    enabled = True, 
+                    methods = [
+                        'email'
+                        ], 
+                    expire_after_access = True, )
             )
         else:
             return PlaceholdersInner(

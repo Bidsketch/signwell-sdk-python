@@ -51,6 +51,14 @@ class DocumentFromTemplateResponseFieldsInnerInner(BaseModel):
     required: StrictBool | None = None
     type: FieldType | None = None
     validation: TextValidation | None = None
+    validation_regex: StrictStr | None = Field(
+        default=None,
+        description="Text fields with custom validation only: the regex pattern used to validate field values. Required when validation is set to custom.",
+    )
+    validation_regex_error_message: StrictStr | None = Field(
+        default=None,
+        description="Text fields with custom validation only: the error message shown to the recipient when their input doesn't match the regex pattern. Required when validation is set to custom.",
+    )
     value: DocumentResponseFieldsInnerInnerValue | None = None
     height: StrictStr | None = None
     width: StrictStr | None = None
@@ -78,6 +86,8 @@ class DocumentFromTemplateResponseFieldsInnerInner(BaseModel):
         "required",
         "type",
         "validation",
+        "validation_regex",
+        "validation_regex_error_message",
         "value",
         "height",
         "width",
@@ -247,6 +257,8 @@ class DocumentFromTemplateResponseFieldsInnerInner(BaseModel):
                 "required": obj.get("required"),
                 "type": obj.get("type"),
                 "validation": obj.get("validation"),
+                "validation_regex": obj.get("validation_regex"),
+                "validation_regex_error_message": obj.get("validation_regex_error_message"),
                 "value": DocumentResponseFieldsInnerInnerValue.from_dict(obj["value"])
                 if obj.get("value") is not None
                 else None,

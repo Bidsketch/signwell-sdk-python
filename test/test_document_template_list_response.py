@@ -65,7 +65,13 @@ class TestDocumentTemplateListResponse(unittest.TestCase):
                                         name = '', 
                                         url = '', 
                                         required = True, )
-                                    ], )
+                                    ], 
+                                passcode_delivery = signwell_sdk.models.document_response_recipients_inner_passcode_delivery.DocumentResponse_recipients_inner_passcode_delivery(
+                                    enabled = True, 
+                                    methods = [
+                                        ''
+                                        ], 
+                                    expire_after_access = True, ), )
                             ], 
                         copied_placeholders = [
                             signwell_sdk.models.document_template_response_copied_placeholders_inner.DocumentTemplateResponse_copied_placeholders_inner(
@@ -112,6 +118,8 @@ class TestDocumentTemplateListResponse(unittest.TestCase):
                                     required = True, 
                                     type = 'initials', 
                                     validation = 'no_text_validation', 
+                                    validation_regex = '', 
+                                    validation_regex_error_message = '', 
                                     value = null, 
                                     height = '', 
                                     width = '', 
@@ -143,10 +151,30 @@ class TestDocumentTemplateListResponse(unittest.TestCase):
                                 checkbox_ids = [
                                     ''
                                     ], 
+                                validation = 'minimum', 
                                 required = True, 
                                 min_value = 56, 
                                 max_value = 56, 
                                 exact_value = 56, )
+                            ], 
+                        conditional_rules = [
+                            signwell_sdk.models.conditional_rule_info.ConditionalRuleInfo(
+                                id = '', 
+                                target_id = '', 
+                                action_type = 'show', 
+                                action_field_ids = [
+                                    ''
+                                    ], 
+                                conditions = [
+                                    signwell_sdk.models.conditional_rule_info_conditions_inner.ConditionalRuleInfo_conditions_inner(
+                                        condition_type = 'any_of', 
+                                        status = 'completed', 
+                                        join_operator = 'and_operator', 
+                                        field_api_ids = [
+                                            ''
+                                            ], 
+                                        position = 56, )
+                                    ], )
                             ], )
                     ],
                 current_page = 56,
@@ -186,7 +214,13 @@ class TestDocumentTemplateListResponse(unittest.TestCase):
                                         name = '', 
                                         url = '', 
                                         required = True, )
-                                    ], )
+                                    ], 
+                                passcode_delivery = signwell_sdk.models.document_response_recipients_inner_passcode_delivery.DocumentResponse_recipients_inner_passcode_delivery(
+                                    enabled = True, 
+                                    methods = [
+                                        ''
+                                        ], 
+                                    expire_after_access = True, ), )
                             ], 
                         copied_placeholders = [
                             signwell_sdk.models.document_template_response_copied_placeholders_inner.DocumentTemplateResponse_copied_placeholders_inner(
@@ -233,6 +267,8 @@ class TestDocumentTemplateListResponse(unittest.TestCase):
                                     required = True, 
                                     type = 'initials', 
                                     validation = 'no_text_validation', 
+                                    validation_regex = '', 
+                                    validation_regex_error_message = '', 
                                     value = null, 
                                     height = '', 
                                     width = '', 
@@ -264,10 +300,30 @@ class TestDocumentTemplateListResponse(unittest.TestCase):
                                 checkbox_ids = [
                                     ''
                                     ], 
+                                validation = 'minimum', 
                                 required = True, 
                                 min_value = 56, 
                                 max_value = 56, 
                                 exact_value = 56, )
+                            ], 
+                        conditional_rules = [
+                            signwell_sdk.models.conditional_rule_info.ConditionalRuleInfo(
+                                id = '', 
+                                target_id = '', 
+                                action_type = 'show', 
+                                action_field_ids = [
+                                    ''
+                                    ], 
+                                conditions = [
+                                    signwell_sdk.models.conditional_rule_info_conditions_inner.ConditionalRuleInfo_conditions_inner(
+                                        condition_type = 'any_of', 
+                                        status = 'completed', 
+                                        join_operator = 'and_operator', 
+                                        field_api_ids = [
+                                            ''
+                                            ], 
+                                        position = 56, )
+                                    ], )
                             ], )
                     ],
                 current_page = 56,

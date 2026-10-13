@@ -37,6 +37,7 @@ class TestUpdateDocumentAndSendRequest(unittest.TestCase):
         if include_optional:
             return UpdateDocumentAndSendRequest(
                 test_mode = True,
+                send_sms_test_preview_email = True,
                 name = '',
                 subject = '',
                 message = '',
@@ -46,12 +47,41 @@ class TestUpdateDocumentAndSendRequest(unittest.TestCase):
                 api_application_id = '',
                 embedded_signing = True,
                 embedded_signing_notifications = True,
+                embedded = signwell_sdk.models.embedded_request.EmbeddedRequest(
+                    branding = signwell_sdk.models.embedded_branding_request.EmbeddedBrandingRequest(
+                        company_logo = signwell_sdk.models.embedded_branding_request_company_logo.EmbeddedBrandingRequest_company_logo(
+                            file_url = 'https://example.com/customer-logo.png', 
+                            file_base64 = '', ), 
+                        accent_color = '#51B6C4', 
+                        button_label_color = '#FFFFFF', 
+                        link_color = '#1A0DAB', 
+                        button_border_radius = 25, ), ),
                 custom_requester_name = '',
                 custom_requester_email = '',
                 redirect_url = '',
                 allow_decline = True,
                 allow_reassign = True,
                 decline_redirect_url = '',
+                conditional_rules = [
+                    signwell_sdk.models.conditional_rule_request.ConditionalRuleRequest(
+                        id = '', 
+                        deleted = True, 
+                        target_id = '', 
+                        action_type = 'show', 
+                        action_field_ids = [
+                            ''
+                            ], 
+                        conditions = [
+                            signwell_sdk.models.conditional_rule_request_conditions_inner.ConditionalRuleRequest_conditions_inner(
+                                condition_type = 'any_of', 
+                                status = 'completed', 
+                                join_operator = 'and_operator', 
+                                field_api_ids = [
+                                    ''
+                                    ], 
+                                position = 56, )
+                            ], )
+                    ],
                 metadata = {
                     'key' : ''
                     },
