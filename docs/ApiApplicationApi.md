@@ -42,7 +42,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -123,7 +122,6 @@ configuration.api_key['api_key'] = os.environ["SIGNWELL_API_KEY"]
 
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['api_key'] = 'Bearer'
-
 # Enter a context with an instance of the API client
 with signwell_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class

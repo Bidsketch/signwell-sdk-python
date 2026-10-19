@@ -47,6 +47,8 @@ class TestFieldsInnerInner(unittest.TestCase):
                 api_id = '',
                 name = '',
                 validation = 'no_text_validation',
+                validation_regex = '',
+                validation_regex_error_message = '',
                 fixed_width = True,
                 lock_sign_date = True,
                 date_format = 'MM/DD/YYYY',

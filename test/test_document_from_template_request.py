@@ -37,6 +37,7 @@ class TestDocumentFromTemplateRequest(unittest.TestCase):
         if include_optional:
             return DocumentFromTemplateRequest(
                 test_mode = True,
+                send_sms_test_preview_email = True,
                 template_id = '',
                 template_ids = [
                     ''
@@ -51,10 +52,20 @@ class TestDocumentFromTemplateRequest(unittest.TestCase):
                         email = 'signer@example.com', 
                         placeholder_name = '', 
                         passcode = '', 
+                        passcode_delivery = signwell_sdk.models.recipients_inner_passcode_delivery.Recipients_inner_passcode_delivery(
+                            enabled = True, 
+                            methods = [
+                                'email'
+                                ], 
+                            expire_after_access = True, ), 
                         subject = '', 
                         message = '', 
                         send_email = True, 
-                        send_email_delay = 56, )
+                        send_email_delay = 56, 
+                        delivery_method = 'email', 
+                        phone_number = '+14155551234', 
+                        send_sms = True, 
+                        send_sms_delay = 56, )
                     ],
                 exclude_placeholders = [
                     ''
@@ -67,6 +78,15 @@ class TestDocumentFromTemplateRequest(unittest.TestCase):
                 api_application_id = '',
                 embedded_signing = True,
                 embedded_signing_notifications = True,
+                embedded = signwell_sdk.models.embedded_request.EmbeddedRequest(
+                    branding = signwell_sdk.models.embedded_branding_request.EmbeddedBrandingRequest(
+                        company_logo = signwell_sdk.models.embedded_branding_request_company_logo.EmbeddedBrandingRequest_company_logo(
+                            file_url = 'https://example.com/customer-logo.png', 
+                            file_base64 = '', ), 
+                        accent_color = '#51B6C4', 
+                        button_label_color = '#FFFFFF', 
+                        link_color = '#1A0DAB', 
+                        button_border_radius = 25, ), ),
                 text_tags = True,
                 custom_requester_name = '',
                 custom_requester_email = '',
@@ -75,6 +95,27 @@ class TestDocumentFromTemplateRequest(unittest.TestCase):
                 allow_reassign = True,
                 decline_redirect_url = '',
                 language = '',
+                conditional_rules = [
+                    signwell_sdk.models.conditional_rule_request.ConditionalRuleRequest(
+                        id = '', 
+                        deleted = True, 
+                        target_id = '', 
+                        action_type = 'show', 
+                        action_field_ids = [
+                            ''
+                            ], 
+                        conditions = [
+                            signwell_sdk.models.conditional_rule_request_conditions_inner.ConditionalRuleRequest_conditions_inner(
+                                condition_type = 'any_of', 
+                                status = 'completed', 
+                                join_operator = 'and_operator', 
+                                field_api_ids = [
+                                    ''
+                                    ], 
+                                position = 56, )
+                            ], )
+                    ],
+                conditional_rules_mode = 'replace',
                 metadata = {
                     'key' : ''
                     },
@@ -103,6 +144,8 @@ class TestDocumentFromTemplateRequest(unittest.TestCase):
                             api_id = '', 
                             name = '', 
                             validation = 'no_text_validation', 
+                            validation_regex = '', 
+                            validation_regex_error_message = '', 
                             fixed_width = True, 
                             lock_sign_date = True, 
                             date_format = 'MM/DD/YYYY', 
@@ -154,10 +197,20 @@ class TestDocumentFromTemplateRequest(unittest.TestCase):
                         email = 'signer@example.com', 
                         placeholder_name = '', 
                         passcode = '', 
+                        passcode_delivery = signwell_sdk.models.recipients_inner_passcode_delivery.Recipients_inner_passcode_delivery(
+                            enabled = True, 
+                            methods = [
+                                'email'
+                                ], 
+                            expire_after_access = True, ), 
                         subject = '', 
                         message = '', 
                         send_email = True, 
-                        send_email_delay = 56, )
+                        send_email_delay = 56, 
+                        delivery_method = 'email', 
+                        phone_number = '+14155551234', 
+                        send_sms = True, 
+                        send_sms_delay = 56, )
                     ],
         )
         """

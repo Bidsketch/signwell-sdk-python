@@ -26,7 +26,10 @@ class CreateWebhookRequest(BaseModel):
     CreateWebhookRequest
     """  # noqa: E501
 
-    callback_url: StrictStr = Field(description="URL that we will post document events to.")
+    callback_url: StrictStr = Field(
+        description="URL that we will post document events to.",
+        json_schema_extra={"examples": ["https://example.com/webhook"]},
+    )
     api_application_id: StrictStr | None = Field(default=None, description="Unique identifier for the API Application.")
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["callback_url", "api_application_id"]

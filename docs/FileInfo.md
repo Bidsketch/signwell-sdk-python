@@ -6,7 +6,7 @@ File information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **str** | File name | 
+**name** | **str** | File name | [optional] 
 **pages_number** | **int** | Number of pages in the file | 
 
 ## Example

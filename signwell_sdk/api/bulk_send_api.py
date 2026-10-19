@@ -93,11 +93,10 @@ class BulkSendApi:
 
         _response_types_map: Dict[str, str | None] = {
             "201": "BulkSendCreateResponse",
-            "422": "ValidationErrorResponse",
             "401": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -157,11 +156,10 @@ class BulkSendApi:
 
         _response_types_map: Dict[str, str | None] = {
             "201": "BulkSendCreateResponse",
-            "422": "ValidationErrorResponse",
             "401": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -221,11 +219,10 @@ class BulkSendApi:
 
         _response_types_map: Dict[str, str | None] = {
             "201": "BulkSendCreateResponse",
-            "422": "ValidationErrorResponse",
             "401": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -339,7 +336,6 @@ class BulkSendApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -399,7 +395,6 @@ class BulkSendApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -459,7 +454,6 @@ class BulkSendApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -572,13 +566,12 @@ class BulkSendApi:
             _return_type = "bytes"
 
         _response_types_map: Dict[str, str | None] = {
-            "200": "bytearray",
+            "200": "bytes",
             "401": "ErrorResponse",
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -645,13 +638,12 @@ class BulkSendApi:
             _return_type = "bytes"
 
         _response_types_map: Dict[str, str | None] = {
-            "200": "bytearray",
+            "200": "bytes",
             "401": "ErrorResponse",
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -718,13 +710,12 @@ class BulkSendApi:
             _return_type = "bytes"
 
         _response_types_map: Dict[str, str | None] = {
-            "200": "bytearray",
+            "200": "bytes",
             "401": "ErrorResponse",
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -852,7 +843,6 @@ class BulkSendApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -924,7 +914,6 @@ class BulkSendApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -996,7 +985,6 @@ class BulkSendApi:
             "404": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -1125,7 +1113,6 @@ class BulkSendApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1200,7 +1187,6 @@ class BulkSendApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1275,7 +1261,6 @@ class BulkSendApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
@@ -1394,11 +1379,10 @@ class BulkSendApi:
 
         _response_types_map: Dict[str, str | None] = {
             "200": "BulkSendValidateCsvResponse",
-            "422": "ValidationErrorResponse",
             "401": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1458,11 +1442,10 @@ class BulkSendApi:
 
         _response_types_map: Dict[str, str | None] = {
             "200": "BulkSendValidateCsvResponse",
-            "422": "ValidationErrorResponse",
             "401": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -1522,11 +1505,10 @@ class BulkSendApi:
 
         _response_types_map: Dict[str, str | None] = {
             "200": "BulkSendValidateCsvResponse",
-            "422": "ValidationErrorResponse",
             "401": "ErrorResponse",
+            "422": "ValidationErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 

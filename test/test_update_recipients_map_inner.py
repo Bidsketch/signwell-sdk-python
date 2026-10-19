@@ -41,7 +41,13 @@ class TestUpdateRecipientsMapInner(unittest.TestCase):
                 email = 'jane@example.com',
                 subject = '',
                 message = '',
-                passcode = ''
+                passcode = '',
+                passcode_delivery = signwell_sdk.models.update_recipients_map_inner_passcode_delivery.update_recipients_map_inner_passcode_delivery(
+                    enabled = True, 
+                    methods = [
+                        'email'
+                        ], 
+                    expire_after_access = True, )
             )
         else:
             return UpdateRecipientsMapInner(

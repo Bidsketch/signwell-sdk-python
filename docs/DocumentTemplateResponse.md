@@ -35,6 +35,7 @@ Name | Type | Description | Notes
 **allow_reassign** | **bool** |  | [optional] 
 **labels** | [**List[LabelInfo]**](LabelInfo.md) |  | [optional] 
 **checkbox_groups** | [**List[CheckboxGroupInfo]**](CheckboxGroupInfo.md) |  | [optional] 
+**conditional_rules** | [**List[ConditionalRuleInfo]**](ConditionalRuleInfo.md) |  | [optional] 
 
 ## Example
 

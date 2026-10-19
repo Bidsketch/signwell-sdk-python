@@ -17,6 +17,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from signwell_sdk.models.placeholders_inner_passcode_delivery import PlaceholdersInnerPasscodeDelivery
 from typing import Any, Optional, Set
 from typing_extensions import Self
 
@@ -32,14 +33,21 @@ class PlaceholdersInner(BaseModel):
     name: StrictStr = Field(description="Name of the placeholder.")
     preassigned_recipient_name: StrictStr | None = Field(
         default=None,
-        description="In some cases, it may be necessary to pre-fill the name and email for a placeholder because it will always be the same person for all documents created from this template. This sets the name.",
+        description="In some cases, it may be necessary to pre-fill the name and email for a placeholder because it will always be the same person for all documents created from this template. This sets the name. Every recipient on a 21 CFR Part 11 document needs a name, so leaving it unset means the name has to be supplied when the document is created.",
     )
     preassigned_recipient_email: StrictStr | None = Field(
         default=None,
         description="In some cases, it may be necessary to pre-fill the name and email for a placeholder because it will always be the same person for all documents created from this template. This sets the email.",
     )
+    passcode_delivery: PlaceholdersInnerPasscodeDelivery | None = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["id", "name", "preassigned_recipient_name", "preassigned_recipient_email"]
+    __properties: ClassVar[List[str]] = [
+        "id",
+        "name",
+        "preassigned_recipient_name",
+        "preassigned_recipient_email",
+        "passcode_delivery",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -83,6 +91,9 @@ class PlaceholdersInner(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of passcode_delivery
+        if self.passcode_delivery:
+            _dict["passcode_delivery"] = self.passcode_delivery.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -105,6 +116,9 @@ class PlaceholdersInner(BaseModel):
                 "name": obj.get("name"),
                 "preassigned_recipient_name": obj.get("preassigned_recipient_name"),
                 "preassigned_recipient_email": obj.get("preassigned_recipient_email"),
+                "passcode_delivery": PlaceholdersInnerPasscodeDelivery.from_dict(obj["passcode_delivery"])
+                if obj.get("passcode_delivery") is not None
+                else None,
             }
         )
         # store additional fields in additional_properties

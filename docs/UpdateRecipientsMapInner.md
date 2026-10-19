@@ -10,7 +10,8 @@ Name | Type | Description | Notes
 **email** | **str** | Updated email address for the recipient. | 
 **subject** | **str** | Updated email subject for the signature request that this recipient will see. | [optional] 
 **message** | **str** | Updated email message for the signature request that this recipient will see. | [optional] 
-**passcode** | **str** | Updated passcode for the recipient. If set, the signer will be required to enter the passcode before viewing and completing the document. | [optional] 
+**passcode** | **str** | Updated passcode for the recipient. If set, the signer will be required to enter the passcode before viewing and completing the document. On a 21 CFR Part 11 document SignWell generates the passcode, so a sender-defined passcode returns a 422. | [optional] 
+**passcode_delivery** | [**UpdateRecipientsMapInnerPasscodeDelivery**](UpdateRecipientsMapInnerPasscodeDelivery.md) |  | [optional] 
 
 ## Example
 

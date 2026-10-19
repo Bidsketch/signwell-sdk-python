@@ -52,6 +52,8 @@ class TestDocumentResponseFieldsInnerInner(unittest.TestCase):
                 required = True,
                 type = 'initials',
                 validation = 'no_text_validation',
+                validation_regex = '',
+                validation_regex_error_message = '',
                 value = None,
                 height = '',
                 width = '',

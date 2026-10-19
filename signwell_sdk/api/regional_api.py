@@ -111,7 +111,6 @@ class RegionalApi:
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -195,7 +194,6 @@ class RegionalApi:
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -279,7 +277,6 @@ class RegionalApi:
             "429": "RateLimitErrorResponse",
         }
         _response_types_map["200"] = _return_type
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 
