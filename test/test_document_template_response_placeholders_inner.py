@@ -48,7 +48,13 @@ class TestDocumentTemplateResponsePlaceholdersInner(unittest.TestCase):
                         name = '', 
                         url = '', 
                         required = True, )
-                    ]
+                    ],
+                passcode_delivery = signwell_sdk.models.document_response_recipients_inner_passcode_delivery.DocumentResponse_recipients_inner_passcode_delivery(
+                    enabled = True, 
+                    methods = [
+                        ''
+                        ], 
+                    expire_after_access = True, )
             )
         else:
             return DocumentTemplateResponsePlaceholdersInner(

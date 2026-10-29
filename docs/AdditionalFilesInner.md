@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **str** | Name of the file that will be uploaded. | 
 **file_url** | **str** | Publicly available URL of the file to be uploaded. | [optional] 
-**file_base64** | **bytearray** | A RFC 4648 base64 string of the file to be uploaded. | [optional] 
+**file_base64** | **bytes** | A RFC 4648 base64 string of the file to be uploaded. | [optional] 
 
 ## Example
 

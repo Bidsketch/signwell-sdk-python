@@ -19,6 +19,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from signwell_sdk.models.checkbox_group_info import CheckboxGroupInfo
+from signwell_sdk.models.conditional_rule_info import ConditionalRuleInfo
 from signwell_sdk.models.document_response_fields_inner_inner import DocumentResponseFieldsInnerInner
 from signwell_sdk.models.document_template_response_copied_placeholders_inner import (
     DocumentTemplateResponseCopiedPlaceholdersInner,
@@ -65,6 +66,7 @@ class DocumentTemplateResponse(BaseModel):
     allow_reassign: StrictBool | None = None
     labels: List[LabelInfo] | None = None
     checkbox_groups: List[CheckboxGroupInfo] | None = None
+    conditional_rules: List[ConditionalRuleInfo] | None = None
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = [
         "id",
@@ -97,6 +99,7 @@ class DocumentTemplateResponse(BaseModel):
         "allow_reassign",
         "labels",
         "checkbox_groups",
+        "conditional_rules",
     ]
 
     model_config = ConfigDict(
@@ -185,6 +188,13 @@ class DocumentTemplateResponse(BaseModel):
                 if _item_checkbox_groups:
                     _items_checkbox_groups.append(_item_checkbox_groups.to_dict())
             _dict["checkbox_groups"] = _items_checkbox_groups
+        # override the default output from pydantic by calling `to_dict()` of each item in conditional_rules (list)
+        _items_conditional_rules: list[Any] = []
+        if self.conditional_rules:
+            for _item_conditional_rules in self.conditional_rules:
+                if _item_conditional_rules:
+                    _items_conditional_rules.append(_item_conditional_rules.to_dict())
+            _dict["conditional_rules"] = _items_conditional_rules
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -312,6 +322,9 @@ class DocumentTemplateResponse(BaseModel):
                 else None,
                 "checkbox_groups": [CheckboxGroupInfo.from_dict(_item) for _item in obj["checkbox_groups"]]
                 if obj.get("checkbox_groups") is not None
+                else None,
+                "conditional_rules": [ConditionalRuleInfo.from_dict(_item) for _item in obj["conditional_rules"]]
+                if obj.get("conditional_rules") is not None
                 else None,
             }
         )

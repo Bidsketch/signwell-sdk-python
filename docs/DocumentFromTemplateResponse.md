@@ -5,6 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**cfr_part11** | **bool** | Whether 21 CFR Part 11 controls apply to this document. Read-only: the value is taken from the workspace setting when the document is created and never changes afterwards. | [optional] 
+**cfr_part11_signing_mode** | **str** | The signing mode of a 21 CFR Part 11 document: streamlined (one final authentication) or per_signature (authentication at every signature and initials field). Null when Part 11 does not apply. | [optional] 
 **test_mode** | **bool** |  | 
 **id** | **str** |  | 
 **template_id** | **str** |  | [optional] 
@@ -23,6 +25,7 @@ Name | Type | Description | Notes
 **status** | **str** | Possible values: Draft, Created, Sending, Sent, Pending, Viewed, Completed, Manually completed, Declined, Canceled, Bounced, Blocked, Error, Expired | [optional] 
 **reminders** | **bool** |  | [optional] 
 **archived** | **bool** |  | [optional] 
+**embedded** | [**EmbeddedBranding**](EmbeddedBranding.md) |  | [optional] 
 **embedded_signing** | **bool** |  | [optional] 
 **embedded_edit_url** | **str** |  | [optional] 
 **embedded_preview_url** | **str** |  | [optional] 
@@ -42,6 +45,8 @@ Name | Type | Description | Notes
 **allow_reassign** | **bool** |  | [optional] 
 **labels** | [**List[LabelInfo]**](LabelInfo.md) |  | [optional] 
 **checkbox_groups** | [**List[CheckboxGroupInfo]**](CheckboxGroupInfo.md) |  | [optional] 
+**conditional_rules** | [**List[ConditionalRuleInfo]**](ConditionalRuleInfo.md) |  | [optional] 
+**conditional_logic_decisions** | [**List[ConditionalLogicDecisionInfo]**](ConditionalLogicDecisionInfo.md) |  | [optional] 
 
 ## Example
 

@@ -39,6 +39,13 @@ class FieldType(str, Enum):
     AUTOFILL_PHONE = "autofill_phone"
     AUTOFILL_TITLE = "autofill_title"
     AUTOFILL_DATE_SIGNED = "autofill_date_signed"
+    UNKNOWN_DEFAULT_OPEN_API = "unknown_default_open_api"
+
+    @classmethod
+    def _missing_(cls, value):
+        if isinstance(value, str):
+            return cls.UNKNOWN_DEFAULT_OPEN_API
+        return None
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

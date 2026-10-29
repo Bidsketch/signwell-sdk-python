@@ -29,7 +29,7 @@ class CopiedPlaceholdersInner(BaseModel):
     name: StrictStr = Field(description="Name of the placeholder.")
     preassigned_recipient_name: StrictStr | None = Field(
         default=None,
-        description="In some cases, it may be necessary to pre-fill the name and email for a placeholder because it will always be the same person for all documents created from this template. This sets the name.",
+        description="In some cases, it may be necessary to pre-fill the name and email for a placeholder because it will always be the same person for all documents created from this template. This sets the name. Every recipient on a 21 CFR Part 11 document needs a name, so leaving it unset means the name has to be supplied when the document is created.",
     )
     preassigned_recipient_email: StrictStr | None = Field(
         default=None,

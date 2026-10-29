@@ -6,7 +6,7 @@ Base64-encoded CSV template
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**data** | **bytearray** | Base64-encoded CSV content | 
+**data** | **bytes** | Base64-encoded CSV content | 
 
 ## Example
 

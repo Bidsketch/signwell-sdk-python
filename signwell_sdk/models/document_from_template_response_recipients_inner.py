@@ -15,9 +15,13 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
 from signwell_sdk.models.attachment_request_info import AttachmentRequestInfo
+from signwell_sdk.models.document_response_recipients_inner_passcode_delivery import (
+    DocumentResponseRecipientsInnerPasscodeDelivery,
+)
+from signwell_sdk.models.document_response_recipients_inner_sms import DocumentResponseRecipientsInnerSms
 from typing import Any, Optional, Set
 from typing_extensions import Self
 
@@ -35,6 +39,10 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
     subject: StrictStr | None = None
     send_email: StrictBool | None = None
     send_email_delay: StrictInt | None = None
+    delivery_method: StrictStr | None = Field(
+        default=None, description="How the recipient is notified: email (default), sms, or email_and_sms."
+    )
+    sms: DocumentResponseRecipientsInnerSms | None = None
     signing_order: StrictInt | None = None
     signing_url: StrictStr | None = None
     embedded_signing_url: StrictStr | None = None
@@ -42,6 +50,7 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
     bounced_details: StrictStr | None = None
     attachment_requests: List[AttachmentRequestInfo] | None = None
     passcode: StrictStr | None = None
+    passcode_delivery: DocumentResponseRecipientsInnerPasscodeDelivery | None = None
     status: StrictStr | None = None
     placeholder_name: StrictStr | None = None
     additional_properties: Dict[str, Any] = {}
@@ -54,6 +63,8 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
         "subject",
         "send_email",
         "send_email_delay",
+        "delivery_method",
+        "sms",
         "signing_order",
         "signing_url",
         "embedded_signing_url",
@@ -61,9 +72,20 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
         "bounced_details",
         "attachment_requests",
         "passcode",
+        "passcode_delivery",
         "status",
         "placeholder_name",
     ]
+
+    @field_validator("delivery_method")
+    def delivery_method_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in {"email", "sms", "email_and_sms", "unknown_default_open_api"}:
+            return "unknown_default_open_api"
+        return value
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -107,6 +129,9 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of sms
+        if self.sms:
+            _dict["sms"] = self.sms.to_dict()
         # override the default output from pydantic by calling `to_dict()` of each item in attachment_requests (list)
         _items_attachment_requests: list[Any] = []
         if self.attachment_requests:
@@ -114,6 +139,9 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
                 if _item_attachment_requests:
                     _items_attachment_requests.append(_item_attachment_requests.to_dict())
             _dict["attachment_requests"] = _items_attachment_requests
+        # override the default output from pydantic by calling `to_dict()` of passcode_delivery
+        if self.passcode_delivery:
+            _dict["passcode_delivery"] = self.passcode_delivery.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -185,6 +213,8 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
                 "subject": obj.get("subject"),
                 "send_email": obj.get("send_email"),
                 "send_email_delay": obj.get("send_email_delay"),
+                "delivery_method": obj.get("delivery_method"),
+                "sms": DocumentResponseRecipientsInnerSms.from_dict(obj["sms"]) if obj.get("sms") is not None else None,
                 "signing_order": obj.get("signing_order"),
                 "signing_url": obj.get("signing_url"),
                 "embedded_signing_url": obj.get("embedded_signing_url"),
@@ -194,6 +224,9 @@ class DocumentFromTemplateResponseRecipientsInner(BaseModel):
                 if obj.get("attachment_requests") is not None
                 else None,
                 "passcode": obj.get("passcode"),
+                "passcode_delivery": DocumentResponseRecipientsInnerPasscodeDelivery.from_dict(obj["passcode_delivery"])
+                if obj.get("passcode_delivery") is not None
+                else None,
                 "status": obj.get("status"),
                 "placeholder_name": obj.get("placeholder_name"),
             }

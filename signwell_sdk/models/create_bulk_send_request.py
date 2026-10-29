@@ -26,8 +26,13 @@ class CreateBulkSendRequest(BaseModel):
     CreateBulkSendRequest
     """  # noqa: E501
 
-    template_ids: List[StrictStr] = Field(description="Unique identifiers for a list of templates.")
-    bulk_send_csv: StrictStr = Field(description="A RFC 4648 base64 string of the template CSV file to be validated.")
+    template_ids: List[StrictStr] = Field(
+        description="Unique identifiers for a list of templates. A template that carries a pre-applied signature or initials field cannot be used while 21 CFR Part 11 is enabled, which requires every signature to be signed by the recipient: it returns a 422."
+    )
+    bulk_send_csv: StrictStr = Field(
+        description="A RFC 4648 base64 string of the template CSV file to be validated. While 21 CFR Part 11 is enabled, every recipient needs a name: the CSV must carry a name column next to each placeholder email column (for example `signer_name` alongside `signer_email`), and each row must fill that name in wherever it carries the matching email, otherwise it returns a 422. A row that leaves both the email and the name blank sends nothing to that placeholder, so no name is needed there.",
+        json_schema_extra={"examples": ["bmFtZSxlbWFpbApUZXN0LHRlc3RAZXhhbXBsZS5jb20K"]},
+    )
     skip_row_errors: StrictBool | None = Field(
         default=False, description="Whether to skip errors in the rows. Defaults to `false`."
     )

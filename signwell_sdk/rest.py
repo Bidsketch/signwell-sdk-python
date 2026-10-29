@@ -14,6 +14,8 @@ import io
 import json
 import re
 import ssl
+import time
+from email.utils import parsedate_to_datetime
 
 import urllib3
 
@@ -56,6 +58,7 @@ class RESTResponse(io.IOBase):
 
 class RESTClientObject:
     def __init__(self, configuration) -> None:
+        self.configuration = configuration
         # urllib3.PoolManager will pass all kw parameters to connectionpool
         # https://github.com/shazow/urllib3/blob/f9409436f83aeb79fbaf090181cd81b784f1b8ce/urllib3/poolmanager.py#L75  # noqa: E501
         # https://github.com/shazow/urllib3/blob/f9409436f83aeb79fbaf090181cd81b784f1b8ce/urllib3/connectionpool.py#L680  # noqa: E501
@@ -77,8 +80,7 @@ class RESTClientObject:
         if configuration.assert_hostname is not None:
             pool_args["assert_hostname"] = configuration.assert_hostname
 
-        if configuration.retries is not None:
-            pool_args["retries"] = configuration.retries
+        pool_args["retries"] = configuration.retries if configuration.retries is not None else False
 
         if configuration.tls_server_name:
             pool_args["server_hostname"] = configuration.tls_server_name
@@ -105,6 +107,27 @@ class RESTClientObject:
                 self.pool_manager = urllib3.ProxyManager(**pool_args)
         else:
             self.pool_manager = urllib3.PoolManager(**pool_args)
+
+    def _request(self, method, url, **kwargs):
+        max_retries = self.configuration.max_rate_limit_retries if self.configuration.retries is None else 0
+        for attempt in range(max_retries + 1):
+            response = self.pool_manager.request(method, url, **kwargs)
+            if response.status != 429 or attempt >= max_retries:
+                return response
+            delay = 2 ** min(attempt, 5)
+            header = response.headers.get("Retry-After", "").strip()
+            if re.fullmatch(r"\d+", header):
+                delay = float(header)
+            elif header:
+                try:
+                    delay = max(0, parsedate_to_datetime(header).timestamp() - time.time())
+                except (ValueError, TypeError, OverflowError):
+                    pass
+            if delay > 60:
+                return response
+            response.close()
+            response.release_conn()
+            time.sleep(delay)
 
     def request(self, method, url, headers=None, body=None, post_params=None, _request_timeout=None):
         """Perform requests.
@@ -147,11 +170,11 @@ class RESTClientObject:
                     request_body = None
                     if body is not None:
                         request_body = json.dumps(body)
-                    r = self.pool_manager.request(
+                    r = self._request(
                         method, url, body=request_body, timeout=timeout, headers=headers, preload_content=False
                     )
                 elif content_type == "application/x-www-form-urlencoded":
-                    r = self.pool_manager.request(
+                    r = self._request(
                         method,
                         url,
                         fields=post_params,
@@ -167,7 +190,7 @@ class RESTClientObject:
                     del headers["Content-Type"]
                     # Ensures that dict objects are serialized
                     post_params = [(a, json.dumps(b)) if isinstance(b, dict) else (a, b) for a, b in post_params]
-                    r = self.pool_manager.request(
+                    r = self._request(
                         method,
                         url,
                         fields=post_params,
@@ -180,12 +203,10 @@ class RESTClientObject:
                 # other content types than JSON when `body` argument is
                 # provided in serialized form.
                 elif isinstance(body, str) or isinstance(body, bytes):
-                    r = self.pool_manager.request(
-                        method, url, body=body, timeout=timeout, headers=headers, preload_content=False
-                    )
+                    r = self._request(method, url, body=body, timeout=timeout, headers=headers, preload_content=False)
                 elif headers["Content-Type"].startswith("text/") and isinstance(body, bool):
                     request_body = "true" if body else "false"
-                    r = self.pool_manager.request(
+                    r = self._request(
                         method, url, body=request_body, preload_content=False, timeout=timeout, headers=headers
                     )
                 else:
@@ -196,9 +217,7 @@ class RESTClientObject:
                     raise ApiException(status=0, reason=msg)
             # For `GET`, `HEAD`
             else:
-                r = self.pool_manager.request(
-                    method, url, fields={}, timeout=timeout, headers=headers, preload_content=False
-                )
+                r = self._request(method, url, fields={}, timeout=timeout, headers=headers, preload_content=False)
         except urllib3.exceptions.TimeoutError as e:
             msg = "\n".join([type(e).__name__, str(e)])
             raise ApiTimeoutError(status=0, reason=msg) from e

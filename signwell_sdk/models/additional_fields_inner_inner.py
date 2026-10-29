@@ -62,6 +62,14 @@ class AdditionalFieldsInnerInner(BaseModel):
         description="Checkbox fields only. At least 2 checkbox fields in an array of fields must be assigned to the same recipient and grouped with selection requirements.",
     )
     validation: TextValidation | None = None
+    validation_regex: StrictStr | None = Field(
+        default=None,
+        description="Text fields with custom validation only: the regex pattern used to validate field values. Required when validation is set to custom.",
+    )
+    validation_regex_error_message: StrictStr | None = Field(
+        default=None,
+        description="Text fields with custom validation only: the error message shown to the recipient when their input doesn't match the regex pattern. Required when validation is set to custom.",
+    )
     fixed_width: StrictBool | None = Field(
         default=False,
         description="Text fields only: whether the field width will stay fixed and text will display in multiple lines, rather than one long line. If set to `false` the field width will automatically grow horizontally to fit text on one line. Defaults to `false`.",
@@ -105,6 +113,8 @@ class AdditionalFieldsInnerInner(BaseModel):
         "api_id",
         "name",
         "validation",
+        "validation_regex",
+        "validation_regex_error_message",
         "fixed_width",
         "lock_sign_date",
         "date_format",
@@ -253,6 +263,8 @@ class AdditionalFieldsInnerInner(BaseModel):
                 "api_id": obj.get("api_id"),
                 "name": obj.get("name"),
                 "validation": obj.get("validation"),
+                "validation_regex": obj.get("validation_regex"),
+                "validation_regex_error_message": obj.get("validation_regex_error_message"),
                 "fixed_width": obj.get("fixed_width") if obj.get("fixed_width") is not None else False,
                 "lock_sign_date": obj.get("lock_sign_date") if obj.get("lock_sign_date") is not None else False,
                 "date_format": obj.get("date_format"),

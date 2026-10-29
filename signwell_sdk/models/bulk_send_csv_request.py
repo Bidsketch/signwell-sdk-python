@@ -29,7 +29,10 @@ class BulkSendCsvRequest(BaseModel):
     template_ids: List[StrictStr] = Field(
         description="Specify one or more templates to generate a single blank CSV file that will contain available columns for your recipient data. The template_ids[] parameter is an array of template IDs (e.g.,`/?template_ids[]=5a67dbd7-928a-4ea0-a7e2-e476a0eb045f&template_ids[]=d7315111-c671-4b15-8354-c9a19bbaefa0`). Each ID should be a separate parameter in the query string."
     )
-    bulk_send_csv: StrictStr = Field(description="A RFC 4648 base64 string of the template CSV file to be validated.")
+    bulk_send_csv: StrictStr = Field(
+        description="A RFC 4648 base64 string of the template CSV file to be validated. While 21 CFR Part 11 is enabled, every recipient needs a name: the CSV must carry a name column next to each placeholder email column (for example `signer_name` alongside `signer_email`), and each row must fill that name in wherever it carries the matching email, otherwise it returns a 422. A row that leaves both the email and the name blank sends nothing to that placeholder, so no name is needed there.",
+        json_schema_extra={"examples": ["bmFtZSxlbWFpbApUZXN0LHRlc3RAZXhhbXBsZS5jb20K"]},
+    )
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["template_ids", "bulk_send_csv"]
 

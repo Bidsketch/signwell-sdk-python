@@ -82,7 +82,6 @@ class MeApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -138,7 +137,6 @@ class MeApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
         return self.api_client.response_deserialize(
@@ -194,7 +192,6 @@ class MeApi:
             "401": "ErrorResponse",
             "429": "RateLimitErrorResponse",
         }
-
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
 

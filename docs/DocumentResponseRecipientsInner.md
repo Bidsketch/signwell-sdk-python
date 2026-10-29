@@ -13,6 +13,8 @@ Name | Type | Description | Notes
 **subject** | **str** |  | [optional] 
 **send_email** | **bool** |  | [optional] 
 **send_email_delay** | **int** |  | [optional] 
+**delivery_method** | **str** | How the recipient is notified: email (default), sms, or email_and_sms. | [optional] 
+**sms** | [**DocumentResponseRecipientsInnerSms**](DocumentResponseRecipientsInnerSms.md) |  | [optional] 
 **signing_order** | **int** |  | [optional] 
 **signing_url** | **str** |  | [optional] 
 **embedded_signing_url** | **str** |  | [optional] 
@@ -20,6 +22,7 @@ Name | Type | Description | Notes
 **bounced_details** | **str** |  | [optional] 
 **attachment_requests** | [**List[AttachmentRequestInfo]**](AttachmentRequestInfo.md) |  | [optional] 
 **passcode** | **str** |  | [optional] 
+**passcode_delivery** | [**DocumentResponseRecipientsInnerPasscodeDelivery**](DocumentResponseRecipientsInnerPasscodeDelivery.md) |  | [optional] 
 **status** | **str** |  | [optional] 
 
 ## Example

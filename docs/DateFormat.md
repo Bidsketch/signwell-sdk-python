@@ -14,6 +14,8 @@ Date format for date fields. Valid values: MM/DD/YYYY, DD/MM/YYYY, YYYY/MM/DD, M
 
 * `MM_SLASH_DD_SLASH_YYYY_HH_COLON_MM_COLON_SS_A` (value: `'MM/DD/YYYY hh:mm:ss a'`)
 
+* `UNKNOWN_DEFAULT_OPEN_API` (value: `'unknown_default_open_api'`)
+
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
 

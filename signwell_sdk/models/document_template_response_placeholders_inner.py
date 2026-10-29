@@ -18,6 +18,9 @@ import json
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from signwell_sdk.models.attachment_request_info import AttachmentRequestInfo
+from signwell_sdk.models.document_response_recipients_inner_passcode_delivery import (
+    DocumentResponseRecipientsInnerPasscodeDelivery,
+)
 from typing import Any, Optional, Set
 from typing_extensions import Self
 
@@ -35,6 +38,7 @@ class DocumentTemplateResponsePlaceholdersInner(BaseModel):
     preassigned_recipient_email: StrictStr | None = None
     signing_order: StrictInt | None = None
     attachment_requests: List[AttachmentRequestInfo] | None = None
+    passcode_delivery: DocumentResponseRecipientsInnerPasscodeDelivery | None = None
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = [
         "id",
@@ -45,6 +49,7 @@ class DocumentTemplateResponsePlaceholdersInner(BaseModel):
         "preassigned_recipient_email",
         "signing_order",
         "attachment_requests",
+        "passcode_delivery",
     ]
 
     model_config = ConfigDict(
@@ -96,6 +101,9 @@ class DocumentTemplateResponsePlaceholdersInner(BaseModel):
                 if _item_attachment_requests:
                     _items_attachment_requests.append(_item_attachment_requests.to_dict())
             _dict["attachment_requests"] = _items_attachment_requests
+        # override the default output from pydantic by calling `to_dict()` of passcode_delivery
+        if self.passcode_delivery:
+            _dict["passcode_delivery"] = self.passcode_delivery.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -133,6 +141,9 @@ class DocumentTemplateResponsePlaceholdersInner(BaseModel):
                 "signing_order": obj.get("signing_order"),
                 "attachment_requests": [AttachmentRequestInfo.from_dict(_item) for _item in obj["attachment_requests"]]
                 if obj.get("attachment_requests") is not None
+                else None,
+                "passcode_delivery": DocumentResponseRecipientsInnerPasscodeDelivery.from_dict(obj["passcode_delivery"])
+                if obj.get("passcode_delivery") is not None
                 else None,
             }
         )

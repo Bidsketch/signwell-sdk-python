@@ -17,6 +17,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from signwell_sdk.models.update_recipients_map_inner_passcode_delivery import UpdateRecipientsMapInnerPasscodeDelivery
 from typing import Any, Optional, Set
 from typing_extensions import Self
 
@@ -28,7 +29,9 @@ class UpdateRecipientsMapInner(BaseModel):
 
     id: StrictStr = Field(description="The recipient's unique identifier from the Get Document response.")
     name: StrictStr = Field(description="Updated name for the recipient.")
-    email: StrictStr = Field(description="Updated email address for the recipient.")
+    email: StrictStr = Field(
+        description="Updated email address for the recipient.", json_schema_extra={"examples": ["jane@example.com"]}
+    )
     subject: StrictStr | None = Field(
         default=None, description="Updated email subject for the signature request that this recipient will see."
     )
@@ -37,10 +40,11 @@ class UpdateRecipientsMapInner(BaseModel):
     )
     passcode: StrictStr | None = Field(
         default=None,
-        description="Updated passcode for the recipient. If set, the signer will be required to enter the passcode before viewing and completing the document.",
+        description="Updated passcode for the recipient. If set, the signer will be required to enter the passcode before viewing and completing the document. On a 21 CFR Part 11 document SignWell generates the passcode, so a sender-defined passcode returns a 422.",
     )
+    passcode_delivery: UpdateRecipientsMapInnerPasscodeDelivery | None = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["id", "name", "email", "subject", "message", "passcode"]
+    __properties: ClassVar[List[str]] = ["id", "name", "email", "subject", "message", "passcode", "passcode_delivery"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -84,6 +88,9 @@ class UpdateRecipientsMapInner(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of passcode_delivery
+        if self.passcode_delivery:
+            _dict["passcode_delivery"] = self.passcode_delivery.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -108,6 +115,9 @@ class UpdateRecipientsMapInner(BaseModel):
                 "subject": obj.get("subject"),
                 "message": obj.get("message"),
                 "passcode": obj.get("passcode"),
+                "passcode_delivery": UpdateRecipientsMapInnerPasscodeDelivery.from_dict(obj["passcode_delivery"])
+                if obj.get("passcode_delivery") is not None
+                else None,
             }
         )
         # store additional fields in additional_properties

@@ -18,6 +18,7 @@ import json
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
+from signwell_sdk.models.conditional_rule_request import ConditionalRuleRequest
 from signwell_sdk.models.label_request import LabelRequest
 from signwell_sdk.models.template_checkbox_groups_inner import TemplateCheckboxGroupsInner
 from typing import Any, Optional, Set
@@ -32,11 +33,11 @@ class DocumentTemplateUpdateRequest(BaseModel):
     name: StrictStr | None = Field(default=None, description="The name of the template.")
     subject: StrictStr | None = Field(
         default=None,
-        description="Email subject for the signature request that recipients will see. Defaults to the default system subject or a template subject (if the document is created from a template).",
+        description="Email subject for the signature request that recipients will see. Defaults to the default system subject or a template subject (if the document is created from a template). Applies to email notifications only; SMS notifications always use fixed system templates.",
     )
     message: StrictStr | None = Field(
         default=None,
-        description="Email message for the signature request that recipients will see. Defaults to the default system message or a template message (if the document is created from a template).",
+        description="Email message for the signature request that recipients will see. Defaults to the default system message or a template message (if the document is created from a template). Applies to email notifications only; SMS notifications always use fixed system templates.",
     )
     draft: StrictBool | None = Field(
         default=False,
@@ -67,10 +68,14 @@ class DocumentTemplateUpdateRequest(BaseModel):
     )
     allow_reassign: StrictBool | None = Field(
         default=True,
-        description="In some cases a signer is not the right person to sign and may need to reassign their signing responsibilities to another person. This feature allows them to reassign the document to someone else.",
+        description="In some cases a signer is not the right person to sign and may need to reassign their signing responsibilities to another person. This feature allows them to reassign the document to someone else. Unavailable on 21 CFR Part 11 documents: omit it and reassignment stays off, while sending `true` returns a 422.",
     )
     decline_redirect_url: StrictStr | None = Field(
         default=None, description="A URL that recipients are redirected to if the document is declined."
+    )
+    conditional_rules: List[ConditionalRuleRequest] | None = Field(
+        default=None,
+        description="Conditional logic rules that show, hide, or require fields based on what a signer does to other fields. Every identifier is a field api_id. At most 10 rules per document or template.",
     )
     metadata: Dict[str, StrictStr] | None = Field(
         default=None,
@@ -98,6 +103,7 @@ class DocumentTemplateUpdateRequest(BaseModel):
         "allow_decline",
         "allow_reassign",
         "decline_redirect_url",
+        "conditional_rules",
         "metadata",
         "labels",
         "checkbox_groups",
@@ -145,6 +151,13 @@ class DocumentTemplateUpdateRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in conditional_rules (list)
+        _items_conditional_rules: list[Any] = []
+        if self.conditional_rules:
+            for _item_conditional_rules in self.conditional_rules:
+                if _item_conditional_rules:
+                    _items_conditional_rules.append(_item_conditional_rules.to_dict())
+            _dict["conditional_rules"] = _items_conditional_rules
         # override the default output from pydantic by calling `to_dict()` of each item in labels (list)
         _items_labels: list[Any] = []
         if self.labels:
@@ -191,6 +204,9 @@ class DocumentTemplateUpdateRequest(BaseModel):
                 "allow_decline": obj.get("allow_decline") if obj.get("allow_decline") is not None else True,
                 "allow_reassign": obj.get("allow_reassign") if obj.get("allow_reassign") is not None else True,
                 "decline_redirect_url": obj.get("decline_redirect_url"),
+                "conditional_rules": [ConditionalRuleRequest.from_dict(_item) for _item in obj["conditional_rules"]]
+                if obj.get("conditional_rules") is not None
+                else None,
                 "metadata": obj.get("metadata"),
                 "labels": [LabelRequest.from_dict(_item) for _item in obj["labels"]]
                 if obj.get("labels") is not None

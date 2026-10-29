@@ -41,7 +41,6 @@ class TestFileInfo(unittest.TestCase):
             )
         else:
             return FileInfo(
-                name = '',
                 pages_number = 56,
         )
         """

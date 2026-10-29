@@ -29,7 +29,10 @@ class ReminderRecipientsInner(BaseModel):
     name: StrictStr | None = Field(
         default=None, description="Recipient's name (required if multiple recipients share the same email)."
     )
-    email: StrictStr | None = Field(default=None, description="Recipient's email address.")
+    email: StrictStr | None = Field(
+        default=None,
+        description="Recipient's email address. Used to match the recipient to remind; not required for SMS-only recipients, who can be identified by name instead.",
+    )
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["name", "email"]
 
